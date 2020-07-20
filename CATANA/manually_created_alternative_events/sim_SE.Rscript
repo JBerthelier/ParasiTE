@@ -1,0 +1,140 @@
+#! /usr/bin/Rscript
+
+# Author: Cheng-Kai Shiau <shiauck at gmail dot com>
+
+no_tx  <- 8
+no_grp <- 5 # one of the groups is exclusion form
+chr_name <- "chr1"
+gene_start <- 1
+gene_end <- 10000
+
+# generate inclusion cases
+tmp_matrix <- matrix(rep(0, (no_grp - 1) * (no_grp - 1)), nrow=(no_grp - 1), ncol=(no_grp - 1))
+for(i in 1:(no_grp - 1)) {
+   tmp_matrix[i, i] <- 1
+}
+
+# add exclusion case
+tmp_matrix <- rbind(tmp_matrix, rep(0, no_grp - 1))
+
+# add shared exons in L and R sides
+tmp_matrix <- cbind(rep(1,no_grp), tmp_matrix, rep(1,no_grp))
+
+# add introns
+exon_usage_matrix <- matrix(tmp_matrix[, 1], ncol=1)
+for(i in 2:ncol(tmp_matrix)) {
+   exon_usage_matrix <- cbind(exon_usage_matrix, rep(0, nrow(tmp_matrix)), tmp_matrix[, i])
+}
+
+# sampling
+sim_matrix <- exon_usage_matrix
+if(no_tx > no_grp) {
+   for(i in 1:(no_tx - no_grp)) {
+      sim_matrix <- rbind(sim_matrix, exon_usage_matrix[sample(nrow(exon_usage_matrix), size=1, replace=T),])
+   }
+}
+
+# add genomic coordination
+boundaries_list <- sort(sample(gene_start:gene_end, size=(ncol(sim_matrix) + 1)))
+
+# generate GFF3
+gff3_str <- data.frame()
+
+   # gene
+gff3_str <- rbind(gff3_str,
+               data.frame(seqid=chr_name,
+                          source="simulated_gene",
+                          type="gene",
+                          start=boundaries_list[1],
+                          end=boundaries_list[length(boundaries_list)],
+                          score=".",
+                          strand="+",
+                          phase=".",
+                          attributes="ID=sim_gene;Name=simulated_gene"))
+
+   # foreach tx
+for(i in 1:nrow(sim_matrix)) {
+   ID_str <- paste("sim_tx_", i, sep="")
+
+   # mRNA
+   exon_pos   <- which(sim_matrix[i,] == 1)
+   mRNA_start <- boundaries_list[min(exon_pos)]
+   mRNA_end   <- boundaries_list[max(exon_pos) + 1]
+   gff3_str   <- rbind(gff3_str,
+		    data.frame(seqid=chr_name,
+                               source="simulated_gene",
+                               type="mRNA",
+                               start=mRNA_start,
+                               end=mRNA_end,
+                               score=".",
+                               strand="+",
+                               phase=".",
+                               attributes=paste("ID=sim_tx_", i, ";",
+                                                "Name=simulated_transcript_", i, ";",
+                                                "Parent=sim_gene;",
+                                                "Parent_name=simulated_gene",
+                                                sep="")))
+
+   # exons
+   exon_num <- 0
+   j <- min(exon_pos) - 1
+   exon_start <- boundaries_list[min(exon_pos)]
+   exon_end   <- NULL
+   while(j < max(exon_pos)) {
+      j <- j + 1
+      if(j > 1){
+         if(sim_matrix[i, j - 1] == 0 & sim_matrix[i, j] == 1) {
+            exon_start <- boundaries_list[j]
+         } else if(sim_matrix[i, j - 1] == 1 & sim_matrix[i, j] == 0) {
+            exon_end <- boundaries_list[j]
+            exon_num <- exon_num + 1
+            #print exon gff3
+            gff3_str <- rbind(gff3_str,
+                        data.frame(seqid=chr_name,
+                                   source="simulated_gene",
+                                   type="exon",
+                                   start=exon_start,
+                                   end=exon_end,
+                                   score=".",
+                                   strand="+",
+                                   phase=".",
+                                   attributes=paste("ID=exon:", ID_str, ":", j, ";",
+                                                    "Parent=", ID_str, ";",
+                                                    "exon_number=", exon_num, ";",
+                                                    "gene_biotype=simulated_gene;",
+                                                    "gene_name=simulated_gene;",
+                                                    "transcript_name=simulated_transcript_", i,
+                                                    sep="")))
+
+            exon_start <- NULL
+            exon_end   <- NULL
+         }
+      }
+   }
+   j <- j + 1
+   if(is.null(exon_start)) {
+      exon_start <- boundaries_list[j - 1]
+   }
+   exon_end <- boundaries_list[j]
+   exon_num <- exon_num + 1
+   #print last exon gff3
+   gff3_str <- rbind(gff3_str,
+               data.frame(seqid=chr_name,
+                          source="simulated_gene",
+                          type="exon",
+                          start=exon_start,
+                          end=exon_end,
+                          score=".",
+                          strand="+",
+                          phase=".",
+                          attributes=paste("ID=exon:", ID_str, ":", j, ";",
+                                           "Parent=", ID_str, ";",
+                                           "exon_number=", exon_num, ";",
+                                           "gene_biotype=simulated_gene;",
+                                           "gene_name=simulated_gene;",
+                                           "transcript_name=simulated_transcript_", i,
+                                           sep="")))
+}
+
+write.table(gff3_str, file="simulated_SE.gff3", row.names=F, col.names=F, quote=F, sep="\t")
+
