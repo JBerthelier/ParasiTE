@@ -48,9 +48,9 @@ Here are the basic command lines to generate your transcriptome annotation for P
 1) Hisat2
 
 hisat2-build genome_assembly.fa index_name
-hisat2 -x index_name --dta -1 forward.fq -2 reverse.fq -S output.sam
-samtools view -Su output.sam > output.bam 
-samtools sort output.bam -o output.sorted.bam
+hisat2 -x index_name --dta -1 forward.fq -2 reverse.fq -S short_reads_aln.sam
+samtools view -Su short_reads_aln.sam > short_reads_aln.bam 
+samtools sort short_reads_aln.bam -o short_reads_aln.sorted.bam
 
 2) Stringtie2
 
@@ -59,12 +59,13 @@ samtools sort output.bam -o output.sorted.bam
 
 1) minimap2
 
-minimap2 -ax splice -uf -k14 -G 10000 genome_assembly.fa long_reads.fa > output.sam
-samtools view -Su output.sam > output.bam
+minimap2 -ax splice -uf -k14 -G 10000 genome_assembly.fa long_reads.fa > long_reads_aln.sam
+samtools view -Su long_reads_aln.sam > long_reads_aln.bam
+samtools sort -@ 10 long_reads_aln.bam > long_reads_aln.sorted.bam
 
 2) Stringtie2
 
-stringtie output.bam -G reference_genome_annotation.gff3 -L > Stringtie2_transcriptome_annotation.gff3
+stringtie long_reads_aln.sorted.bam -G reference_genome_annotation.gff3 -L > Stringtie2_transcriptome_annotation.gff3
 
 
 
