@@ -66,6 +66,36 @@ samtools sort -@ 10 long_reads_aln.bam > long_reads_aln.sorted.bam
 2) Stringtie2
 
 stringtie long_reads_aln.sorted.bam -G reference_genome_annotation.gff3 -L > Stringtie2_transcriptome_annotation.gff3
+____________________________________________
+
+#Parasite help#
+
+Usage: ParasiTE.r [options]
+Options:
+        -T CHARACTER, --transposons=CHARACTER
+                Annotation of transposable elements (.gff3)
+        -G CHARACTER, --genes=CHARACTER
+                Gene model annotation containing gene positions (.gff3)
+        -R CHARACTER, --transcripts=CHARACTER
+                Transcript annotation obtained by Stringtie, containing transcript and exon positions (.gff3)
+        -F NUMBER, --Tfalsepositive=NUMBER
+                Proportion of length of a TEs in a genes, to consider the gene as a TE-like gene, the gene annotation  will              
+                be removed for the analyses [default= 0.8] (80%)
+        -I NUMBER, --Tintragenic=NUMBER
+                Proportion of length of a TEs that overlap a gene to be considerated as intragenic [default= 0.8] (80%)
+        -i NUMBER, --Tambigous=NUMBER
+                Proportion of length of an exons that an TEs can partialy overlap to be exonic ambigous, [default= 0.8]          
+        -e NUMBER, --Texon=NUMBER
+                Minimum proportion of a TEs in an exon to be considered as exonic, [default= 0.8] (80%)
+        -n NUMBER, --Tneighbor=NUMBER
+                Maximum distance between a TE to a gene to be considerate as a neighbor TE, [default= 1000] (1000 bp)
+        -E NUMBER, --MinLexons=NUMBER
+                Min length of exons',  [default= 200] (0)
+        -m NUMBER, --MinLtransposons=NUMBER
+                Min length of transposons',  [default= 0] (0)
+        -M NUMBER, --MaxLtransposons=NUMBER
+                Maximun length of transposons',  [default= 30000] (0)
+        -h, --help                 Show this help message and exit
 
 
 
