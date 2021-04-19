@@ -1,14 +1,14 @@
 # ParasiTE
 
 #Aim 
-ParasiTE is a pipeline wrote in R and bash that aim to identify TE-related gene and TE-related alternative gene isoforms.
+ParasiTE is a tool that aim to 1) classify TE that are located intragenic or intergenic region regarding to genes 2) identify TEs located in exonic or intronic region of genes 3) detect TEs that generate alternative isoforms of genes.
 
 #Steps
 ParasiTE is globally composed of three steps:
 
-1)	Discrimination of intragenic and intergenic TEs
-2)	Discrimination of intronic and exonic TEs
-3)  Classification of TE-derived alternative transcript events. 
+1) Discrimination of intragenic and intergenic TEs
+2) Discrimination of intronic and exonic TEs
+3) Detection of TE-derived alternative transcript events. 
 
 #Outputs
 ParasiTE give in output:
