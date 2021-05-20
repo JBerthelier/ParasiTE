@@ -445,36 +445,46 @@ detailed_join_gene$Alternative_splicing <- as.character(gsub('MXE','SE',detailed
 ##FOR AS
 
 #Rule 1: If the Freq_TE_isoform is 1 and that the AS check is false (no overlap with a splicing site), do not give AS prediction
+detailed_join_gene2 <- detailed_join_gene
+detailed_join_gene$Alternative_splicing <- ifelse(detailed_join_gene$Freq_TE_isoform==1 & detailed_join_gene$AS_check==FALSE,NA, detailed_join_gene2$Alternative_splicing )
+
+#Rule 2: If the intragenic TE has a TE freq of 1 and is located at the first or last exon, if it do not not overlap the correct (start or end) of the exon, there is no ATP prediction  
 detailed_join_gene3 <- detailed_join_gene
-detailed_join_gene$Alternative_splicing <- ifelse(detailed_join_gene$Freq_TE_isoform==1 & detailed_join_gene$AS_check==FALSE,NA, detailed_join_gene3$Alternative_splicing )
+detailed_join_gene$Alternative_transcription <- ifelse(detailed_join_gene$TE_localisation=="Intragenic" & detailed_join_gene$Freq_TE_isoform==1 & ((detailed_join_gene$TE_position_isoform=="ending" & detailed_join_gene$exon_strand=="+" & detailed_join_gene$Exon_check_end==FALSE) | (detailed_join_gene$TE_position_isoform=="begining" & detailed_join_gene$exon_strand=="+" & detailed_join_gene$Exon_check_start==FALSE) | (detailed_join_gene$TE_position_isoform=="ending" & detailed_join_gene$exon_strand=="-" & detailed_join_gene$Exon_check_start==FALSE) | (detailed_join_gene$TE_position_isoform=="begining" & detailed_join_gene$exon_strand=="-" & detailed_join_gene$Exon_check_end==FALSE) | ( detailed_join_gene$Exon_check_start==FALSE & detailed_join_gene$Exon_check_end==FALSE)),NA, detailed_join_gene3$Alternative_transcription )
 
-#Rule 2
-detailed_join_gene9 <- detailed_join_gene
-detailed_join_gene$Alternative_transcription <- ifelse(detailed_join_gene$TE_localisation=="Intragenic" & detailed_join_gene$Freq_TE_isoform==1 & ((detailed_join_gene$TE_position_isoform=="ending" & detailed_join_gene$exon_strand=="+" & detailed_join_gene$Exon_check_end==FALSE) | (detailed_join_gene$TE_position_isoform=="begining" & detailed_join_gene$exon_strand=="+" & detailed_join_gene$Exon_check_start==FALSE) | (detailed_join_gene$TE_position_isoform=="ending" & detailed_join_gene$exon_strand=="-" & detailed_join_gene$Exon_check_start==FALSE) | (detailed_join_gene$TE_position_isoform=="begining" & detailed_join_gene$exon_strand=="-" & detailed_join_gene$Exon_check_end==FALSE) | ( detailed_join_gene$Exon_check_start==FALSE & detailed_join_gene$Exon_check_end==FALSE)),NA, detailed_join_gene9$Alternative_transcription )
-
-#Rule 3 remove those that are in begining/ending and that generate AS but no ATP
-detailed_join_gene10 <- detailed_join_gene
-detailed_join_gene$Alternative_transcription <- ifelse(detailed_join_gene$TE_localisation=="Intragenic" & detailed_join_gene$Exon_check_start==FALSE & detailed_join_gene$Exon_check_end==FALSE & detailed_join_gene$AS_check==TRUE & (detailed_join_gene$TE_position_isoform=="begining" | detailed_join_gene$TE_position_isoform=="ending"),NA, detailed_join_gene10$Alternative_transcription )
+#Rule 3
+detailed_join_gene4 <- detailed_join_gene
+detailed_join_gene$Alternative_transcription <- ifelse(detailed_join_gene$TE_localisation=="Intragenic" & detailed_join_gene$Exon_check_start==FALSE & detailed_join_gene$Exon_check_end==FALSE & detailed_join_gene$AS_check==FALSE & !is.na(detailed_join_gene$Alternative_splicing) ,NA, detailed_join_gene4$Alternative_transcription )
 
 #Rule 4
-detailed_join_gene11 <- detailed_join_gene
-detailed_join_gene$Alternative_transcription <- ifelse(detailed_join_gene$TE_localisation=="Intragenic" & detailed_join_gene$Exon_check_start==FALSE & detailed_join_gene$Exon_check_end==FALSE & detailed_join_gene$AS_check==FALSE & !is.na(detailed_join_gene$Alternative_splicing) ,NA, detailed_join_gene11$Alternative_transcription )
+detailed_join_gene5 <- detailed_join_gene
+detailed_join_gene$Alternative_splicing <- ifelse(detailed_join_gene$TE_localisation=="Intragenic" & !is.na(detailed_join_gene$Alternative_transcription) & detailed_join_gene$AS_check==FALSE & (detailed_join_gene$TE_position_isoform=="begining" | detailed_join_gene$TE_position_isoform=="ending" | detailed_join_gene$TE_position_isoform=="single"), NA, detailed_join_gene5$Alternative_splicing )
 
 #Rule 5
-detailed_join_gene1 <- detailed_join_gene
-detailed_join_gene$Alternative_splicing <- ifelse(detailed_join_gene$TE_localisation=="Intragenic" & !is.na(detailed_join_gene$Alternative_transcription) & detailed_join_gene$AS_check==FALSE & (detailed_join_gene$TE_position_isoform=="begining" | detailed_join_gene$TE_position_isoform=="ending" | detailed_join_gene$TE_position_isoform=="single"), NA, detailed_join_gene1$Alternative_splicing )
+detailed_join_gene6 <- detailed_join_gene
+detailed_join_gene$Alternative_splicing <- ifelse(detailed_join_gene$TE_localisation=="Intergenic" & ( detailed_join_gene$TE_position_isoform=="begining" | detailed_join_gene$TE_position_isoform=="ending" | detailed_join_gene$TE_position_isoform=="single") & detailed_join_gene$AS_check==FALSE,NA, detailed_join_gene6$Alternative_splicing )
 
-#Rule 6
-detailed_join_gene2 <- detailed_join_gene
-detailed_join_gene$Alternative_splicing <- ifelse(detailed_join_gene$TE_localisation=="Intergenic" & ( detailed_join_gene$TE_position_isoform=="begining" | detailed_join_gene$TE_position_isoform=="ending" | detailed_join_gene$TE_position_isoform=="single") & detailed_join_gene$AS_check==FALSE,NA, detailed_join_gene2$Alternative_splicing )
+#Rule 6: remove FP prediction for ATP prediction found for isoform composed of two exons
+detailed_join_gene7 <- detailed_join_gene
+detailed_join_gene$Alternative_transcription <- ifelse(detailed_join_gene$TE_position_isoform=="middle",NA, detailed_join_gene7$Alternative_transcription)
+
+detailed_join_gene8 <- detailed_join_gene
+detailed_join_gene$Alternative_transcription <- ifelse((detailed_join_gene$total_exon_number==2 | detailed_join_gene$total_exon_number==1) & (detailed_join_gene$TE_position_isoform=="ending") & (grepl("ATTS",detailed_join_gene$Alternative_transcription)==TRUE) & (grepl("ATSS",detailed_join_gene$Alternative_transcription)==TRUE),as.character(gsub('ATSS','@',detailed_join_gene$Alternative_transcription)), detailed_join_gene8$Alternative_transcription )
+detailed_join_gene9 <- detailed_join_gene
+detailed_join_gene$Alternative_transcription <- ifelse((detailed_join_gene$total_exon_number==2 | detailed_join_gene$total_exon_number==1) & (detailed_join_gene$TE_position_isoform=="begining") & (grepl("ATSS",detailed_join_gene$Alternative_transcription)==TRUE) & (grepl("ATTS",detailed_join_gene$Alternative_transcription)==TRUE),as.character(gsub('ATTS','@',detailed_join_gene$Alternative_transcription)), detailed_join_gene9$Alternative_transcription )
+detailed_join_gene10 <- detailed_join_gene
+detailed_join_gene$Alternative_transcription <- ifelse((detailed_join_gene$total_exon_number==2 | detailed_join_gene$total_exon_number==1) & (detailed_join_gene$TE_position_isoform=="ending") & (grepl("AFE",detailed_join_gene$Alternative_transcription)==TRUE) & (grepl("ALE",detailed_join_gene$Alternative_transcription)==TRUE),as.character(gsub('AFE','@',detailed_join_gene$Alternative_transcription)), detailed_join_gene10$Alternative_transcription )
+detailed_join_gene11 <- detailed_join_gene
+detailed_join_gene$Alternative_transcription <- ifelse((detailed_join_gene$total_exon_number==2 | detailed_join_gene$total_exon_number==1) & (detailed_join_gene$TE_position_isoform=="begining") & (grepl("ALE",detailed_join_gene$Alternative_transcription)==TRUE) & (grepl("AFE",detailed_join_gene$Alternative_transcription)==TRUE),as.character(gsub('ALE','@',detailed_join_gene$Alternative_transcription)), detailed_join_gene11$Alternative_transcription )
+detailed_join_gene$Alternative_transcription <- as.character(gsub('\\b, @\\b','',detailed_join_gene$Alternative_transcription))
+detailed_join_gene$Alternative_transcription <- as.character(gsub('\\b@, \\b','',detailed_join_gene$Alternative_transcription))
+detailed_join_gene$Alternative_transcription <- as.character(gsub('\\b @, \\b',',',detailed_join_gene$Alternative_transcription))
+detailed_join_gene$Alternative_transcription <- as.character(gsub('\\b, @, \\b',', ',detailed_join_gene$Alternative_transcription))
 
 ###### Check if exon candidates are overlaping CDS or 5UTR or 3UTR
 
 TE_annotation_candidate <- detailed_join_gene[,c("TE_chromosome", "TE_start", "TE_end", "isoform_id")]
-
 TE_annotation_candidate$TE_chromosome <- as.numeric(levels(TE_annotation_candidate$TE_chromosome))[TE_annotation_candidate$TE_chromosome]
-#TE_annotation_candidate$TE_start <- as.numeric(levels(TE_annotation_candidate$TE_start))[TE_annotation_candidate$TE_start]
-#TE_annotation_candidate$TE_end <- as.numeric(levels(TE_annotation_candidate$TE_end))[TE_annotation_candidate$TE_end]
 
 write.table(TE_annotation_candidate,file="../ParasiTE_output/TE_annotation_candidate.txt",sep = "\t",row.names=F,col.names=F)
 system(paste("bedtools sort -i  ../ParasiTE_output/TE_annotation_candidate.txt >  ../ParasiTE_output/TE_annotation_candidate.bed"))
@@ -503,7 +513,7 @@ detailed_join_gene <- cbind(detailed_join_gene,three_check)
 
 ########### FINAL results
 #########################
-write.table(detailed_join_gene,file="../ParasiTE_output/Results/Annotations_chimerick_TE_events/Results_transcripts_TEs_all_events.tab",sep = "\t",row.names=F)
+write.table(detailed_join_gene,file="../ParasiTE_output/Results/Annotations_chimerick_TE_events/Results_transcripts_TEs_all_events.tab",sep = "\t",row.names=F,col.names=T)
 
 ###############################################################
 ########################### GENE-TE alternative splicing events
@@ -629,7 +639,7 @@ overview_gene_TE <- overview_gene_TE[!duplicated(overview_gene_TE), ]
 
 overview_gene_TE <- overview_gene_TE[,c("TE_gene", "Gene_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "total_exon_number", "Freq_TE_isoform", "TE_id", "TE_chromosome", "TE_start", "TE_end", "TE_localisation", "method","Alternative_splicing", "Alternative_transcription", "begining", "middle", "ending", "single" )]
 
-write.table(overview_gene_TE,file="../ParasiTE_output/Results/Annotations_chimerick_TE_events/Result_genes_TEs_all_events.tab",sep = "\t",row.names=F,col.names=F)
+write.table(overview_gene_TE,file="../ParasiTE_output/Results/Annotations_chimerick_TE_events/Result_genes_TEs_all_events.tab",sep = "\t",row.names=F,col.names=T)
 
 
 ########################### Separate Gene-TE alternative & no alternative transcript events
@@ -637,13 +647,12 @@ write.table(overview_gene_TE,file="../ParasiTE_output/Results/Annotations_chimer
 
 overview_gene_TE_alternative <- overview_gene_TE[!(is.na(overview_gene_TE$Alternative_transcription) & is.na(overview_gene_TE$Alternative_splicing)) ,]
 
-write.table(overview_gene_TE_alternative,file="../ParasiTE_output/Results/Annotations_chimerick_TE_events/Result_genes_TEs_alternative_events.tab",sep = "\t",row.names=F,col.names=F)
+write.table(overview_gene_TE_alternative,file="../ParasiTE_output/Results/Annotations_chimerick_TE_events/Result_genes_TEs_alternative_events.tab",sep = "\t",row.names=F,col.names=T)
 
 ########################### Separate Transcripts-TEs alternative & no alternative transcript events
 detailed_join_gene_alternative <- detailed_join_gene[!(is.na(detailed_join_gene$Alternative_transcription) & is.na(detailed_join_gene$Alternative_splicing)) ,]
 
-write.table(detailed_join_gene_alternative,file="../ParasiTE_output/Results/Annotations_chimerick_TE_events/Result_transcripts_TEs_alternative_events.tab",sep = "\t",row.names=F,col.names=F)
-
+write.table(detailed_join_gene_alternative,file="../ParasiTE_output/Results/Annotations_chimerick_TE_events/Result_transcripts_TEs_alternative_events.tab",sep = "\t",row.names=F,col.names=T)
 
 print("Finished")
 

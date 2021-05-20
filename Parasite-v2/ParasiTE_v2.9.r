@@ -29,7 +29,7 @@ option_list = list(
     make_option(c("-I", "--Tintragenic"), type="character", default=0.8, 
               help="Proportion of TEs that overlap a gene to be view as intragenic [default= %default]", metavar="number"),
     make_option(c("-i", "--Tintron"), type="character", default=0.01,
-              help="Min proportion of an exons that a TEs partialy overlap to be view as partial exonic, othervise it is view as intronic , [default= %default] (0.1%)", metavar="number"),
+              help="Min proportion of an exons that a TEs partialy overlap to be view as partial exonic, othervise it is view as intronic , [default= %default] (0.01%)", metavar="number"),
     make_option(c("-e", "--Texon1"), type="character", default=0.8, 
               help="Minimum proportion of a TEs in an exon to be considered as exonic, [default= %default] (50%)", metavar="number"),       
     make_option(c("-E", "--Texon2"), type="character", default=0.8, 
@@ -69,10 +69,7 @@ initial.options <- commandArgs(trailingOnly = FALSE)
 file.arg.name <- "--file="
 script.name <- sub(file.arg.name, "", initial.options[grep(file.arg.name, initial.options)])
 script.basename <- dirname(script.name)
-#print(script.basename)
-#other.name <- file.path(script.basename, "ParasiTE.R")
-#print(paste("Sourcing",other.name,"from",script.name))
-#source(other.name)
+
 
 setwd(script.basename)
 
@@ -87,6 +84,8 @@ system(paste("mkdir ../ParasiTE_output/Results/Annotations_TEs"))
 system(paste("mkdir ../ParasiTE_output/Results/Annotations_TEs_events"))
 system(paste("mkdir ../ParasiTE_output/Results/Annotations_chimerick_TE_events"))
 
+logo <- read.delim("../Rscript/logo.txt",header=F)
+print(logo,row.names=F,col.names=F)
 
 ###STEP 0 loading the files
 
