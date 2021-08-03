@@ -3,48 +3,52 @@ library("optparse")
 library(data.table) ## v 1.9.6+ 
 library(splitstackshape)
 
-##ParasiTE has been wrote by Jeremy Berthelier, 2021, Plant Epigenetics Unit, Okinawa Institute of Science and Technology
+#ParasiTE has been wrote by Jeremy Berthelier, 2021, Plant Epigenetics Unit, Okinawa Institute of Science and Technology
+
 
 ###ParasiTE main launcher script 
-
 ##1/options and help message
 
 option_list = list(
     make_option(c("-T", "--transposons"), type="character", default=NULL, 
-              help="Annotation of transposable elements (.gff3)", metavar="character"),
-    make_option(c("-L", "--transposonsgenes"), type="character", default=NULL, 
-              help="Annotation of gene-like transposable elements (.gff3)", metavar="character"),
+              help="[required] Pathway to the annotation of transposable elements (.gff3)", metavar="character"),
     make_option(c("-G", "--genes"), type="character", default=NULL, 
-              help="Gene model annotation contening gene and exon positions (.gff3)", metavar="character"),   
+              help="[required] Pathway to the gene model annotation (genes/exons) (.gff3)", metavar="character"),   
     make_option(c("-R", "--transcripts"), type="character", default=NULL, 
-              help="Transcript annotation obtain by Stringtie, contening transcript and exon positions (.gff3)", metavar="character"),  
+              help="[required] Pathway to the transcriptome annotation.
+                    No need -P option if you use a Stringtie annotation obtained with short read, or long read with the option Assembly.
+                    Use '-P SR' if you use a Stringtie annotation obtained with long reads and the option Raw.
+                    Use '-P SM' if you want to use your own annotation that have been propery parsed. (.gff3)", metavar="character"),
+    make_option(c("-P", "--Pmode"), type="character", default="0", 
+              help="(optional) Add this option if: 
+                    -the transcriptome annotation have been generated with long-reads by Stringtie using Raw mode (use -P SR).
+                    -you are using a custom transcriptome annotation that have been properly formated (use -P SM)',  [default= %default] (0)", metavar="number")              
+    make_option(c("-L", "--transposonsgenes"), type="character", default=NULL, 
+              help="(optional) Pathway to the annotation of gene-like transposable elements (.gff3)", metavar="character"),
     make_option(c("-C", "--cds"), type="character", default=NULL, 
-              help="annotation of CDC (.gff3)", metavar="character"),  
+              help="(optional) Pathway to theannotation of CDS (.gff3)", metavar="character"),  
     make_option(c("-f", "--five"), type="character", default=NULL, 
-              help="annotation of five primer utr (.gff3)", metavar="character"),    
+              help="(optional) Pathway to theannotation of 5`UTR (.gff3)", metavar="character"),    
     make_option(c("-t", "--three"), type="character", default=NULL, 
-              help="annotation of three prime utr (.gff3)", metavar="character"),    
+              help="(optional) Pathway to theannotation of 3`UTR (.gff3)", metavar="character"),    
     make_option(c("-F", "--Tfalsepositive"), type="character", default=0.8, 
-              help="% of a TEs in a genes to be considered as false positive, [default= %default] (80%)", metavar="number"), 
+              help="Percentage of a TEs that overlap a gene annotation to be considered as false positive, [default= %default] (80%)", metavar="number"), 
     make_option(c("-I", "--Tintragenic"), type="character", default=0.8, 
-              help="Proportion of TEs that overlap a gene to be view as intragenic [default= %default]", metavar="number"),
+              help="Proportion (%) of TEs that overlap a gene to be view as intragenic [default= %default]", metavar="number"),
     make_option(c("-i", "--Tintron"), type="character", default=0.01,
-              help="Min proportion of an exons that a TEs partialy overlap to be view as partial exonic, othervise it is view as intronic , [default= %default] (0.01%)", metavar="number"),
+              help="Minimum proportion (%) of an exons that a TE have to overlap to be view as partial exonic, othervise it is view as intronic, [default= %default] (0.01%)", metavar="number"),
     make_option(c("-e", "--Texon1"), type="character", default=0.8, 
-              help="Minimum proportion of a TEs in an exon to be considered as exonic, [default= %default] (50%)", metavar="number"),       
+              help="Minimum proportion (%) of a TE in an exon to be considered as exonic, [default= %default] (80%)", metavar="number"),       
     make_option(c("-E", "--Texon2"), type="character", default=0.8, 
-              help="Minimum proportion of a TEs in an exon to be considered as fragmented exonic, [default= %default] (50%)", metavar="number"), 
+              help="Minimum proportion of a TEs in an exon to be considered as fragmented exonic, [default= %default] (80%)", metavar="number"), 
     make_option(c("-n", "--Tneighbor"), type="character", default=2000, 
               help="Maximum distance between a gene and a neighbor TE, [default= %default] (2000 bp)", metavar="number"),
     make_option(c("-X", "--MinLexons"), type="character", default=10, 
-              help="Min length of exons',  [default= %default] (0)", metavar="number"),
+              help="Minimum length of exons',  [default= %default] (10 bp)", metavar="number"),
     make_option(c("-m", "--MinLtransposons"), type="character", default=0, 
-              help="Min length of transposons',  [default= %default] (0)", metavar="number"),
+              help="Minimum length of transposons ',  [default= %default] (0 bp)", metavar="number"),
     make_option(c("-M", "--MaxLtransposons"), type="character", default=50000, 
-              help="Maximun length of transposons',  [default= %default] (0)", metavar="number"),
-    make_option(c("-P", "--Pmode"), type="character", default="SA", 
-              help="Choose the mode of transcript',  [default= %default] (0)", metavar="number")
-              
+              help="Maximun length of transposons',  [default= %default] (50000 bp)", metavar="number"),
 ); 
  
 opt_parser = OptionParser(option_list=option_list);
@@ -498,7 +502,7 @@ colnames(transposons)<-c("techromosome","testart", "teend", "tename", "other", "
 #check if the cov is indicated for exon, beacause Stringtie do not give the coverage if we use the option -R in Stringtie. Therefore this cause problem for Parasite.
 #Here, the script check if the coverage is indicated, if not it add a false one 0.000000, to make the script work.
 #FOR ANNOTATION OF ARAPORT11 
-if (opt$Pmode=="araport11"){
+if (opt$Pmode=="SM"){
 transposons$idexon <- ifelse(grepl("cov",transposons$idexon),transposons$idexon,paste0(transposons$idexon," cov 0.000000;"))
 }
 #FOR ANNOTATION OF STRINGTIE R 
@@ -513,7 +517,7 @@ colnames(All_exons)<-c("chromosome","start", "end", "poin", "other", "strand","t
 #check if the cov is indicated for exon, beacause Stringtie do not give the coverage if we use the option -R in Stringtie. Therefore this cause problem for Parasite.
 #Here, the script check if the coverage is indicated, if not it add a false one 0.000000, to make the script work.
 #FOR ANNOTATION OF ARAPORT11 
-if (opt$Pmode=="araport11"){
+if (opt$Pmode=="SM"){
 All_exons$id <- ifelse(grepl("cov",All_exons$id),All_exons$id,paste0(All_exons$id," cov 0.000000;"))
 }
 #FOR ANNOTATION OF STRINGTIE R 
@@ -930,8 +934,6 @@ detailed_join_gene$Alternative_splicing <- as.character(gsub('MXE','SE',detailed
 
 ###### Rules to limit potential false positives predictions
 ###########################################################
-
-##FOR AS
 
 #Rule 1: If the Freq_TE_isoform is 1 and that the AS check is false (no overlap with a splicing site), do not give AS prediction
 detailed_join_gene2 <- detailed_join_gene
