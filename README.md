@@ -1,20 +1,24 @@
 # ParasiTE
 
-#Aim 
-ParasiTE is a tool that aim to 1) classify TE that are located intragenic or intergenic region regarding to genes 2) identify TEs located in exonic or intronic region of genes 3) detect TEs that generate alternative isoforms of genes.
+# Aim 
+
+ParasiTE is a tool that aim to 
+1) identify TEs located in exonic or intronic region of genes 
+2) detect TEs that generate alternative isoforms of genes.
 
 #Steps
-ParasiTE is globally composed of three steps:
+ParasiTE is globally composed of five steps:
 
-1) Discrimination of intragenic and intergenic TEs
-2) Discrimination of intronic and exonic TEs
-3) Detection of TE-derived alternative transcript events. 
+1) Removing of tramscripts produced by gene-like TEs (transcripts of free TEs)
+2) Discrimination of intragenic and intergenic TEs
+3) Discrimination of intronic and exonic TEs
+4) Detection of TE-gene isoforms (TE-Gi) events
+5) Detection of alternative TE-gene isoforms (altTE-Gi) events
 
 #Outputs
 ParasiTE give in output:
 
-. Annotation and proportion of intergenic and intragenic TEs.
-. Annotation and proportion of intragenic exonic and intragenic intronic TEs.
+. Annotation intergenic, intronic and exonic TEs.
 . List of TE-related gene candidates
 . List of TE-related alternative gene isoforms
 
