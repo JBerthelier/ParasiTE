@@ -1,8 +1,6 @@
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/logo.png)
 
-Identification of alternative TE-genes isoforms events from gtf/gff annotations
-
-# Aim 
+# Identification of alternative TE-genes isoforms events
 
 ParasiTE is a tool that aim to 
 1) identify TEs located in exonic or intronic region of genes 
