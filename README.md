@@ -1,5 +1,7 @@
 # ParasiTE
 
+![](https://github.com/JBerthelier/ParasiTE/blob/master/logo.png)
+
 Identification of alternative TE-genes isoforms events from gtf/gff annotations
 
 # Aim 
@@ -9,6 +11,9 @@ ParasiTE is a tool that aim to
 2) detect TEs that are part of genes and that contribute in alternative isoforms of genes.
 
 #Steps
+
+![](https://github.com/JBerthelier/PiRATE/blob/master/pirate-galaxy.PNG?raw=true)
+
 ParasiTE is globally composed of five steps:
 
 1) Removing of tramscripts produced by gene-like TEs (transcripts of free TEs)
