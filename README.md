@@ -1,5 +1,3 @@
-# ParasiTE
-
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/logo.png)
 
 Identification of alternative TE-genes isoforms events from gtf/gff annotations
