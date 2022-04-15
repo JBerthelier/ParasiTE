@@ -1,10 +1,12 @@
 # ParasiTE
 
+Identification of alternative TE-genes isoforms events from gtf/gff annotations
+
 # Aim 
 
 ParasiTE is a tool that aim to 
 1) identify TEs located in exonic or intronic region of genes 
-2) detect TEs that generate alternative isoforms of genes.
+2) detect TEs that are part of genes and that contribute in alternative isoforms of genes.
 
 #Steps
 ParasiTE is globally composed of five steps:
