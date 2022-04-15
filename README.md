@@ -12,7 +12,7 @@ ParasiTE is a tool that aim to
 
 #Steps
 
-![](https://github.com/JBerthelier/PiRATE/blob/master/pirate-galaxy.PNG?raw=true)
+![](https://github.com/JBerthelier/ParasiTE/blob/master/ParasiTE_steps_illustration.png)
 
 ParasiTE is globally composed of five steps:
 
