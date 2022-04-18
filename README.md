@@ -62,11 +62,30 @@ ParasiTE outputs are:
 The command is :
 
 `Rscript /patway/to/ParasiTE_v1.r -T /Pathway/to/TE_annotation.gff3 -G /pathway/to/gene_annotation.gtf 
--R /pathway/to/transcripts_annotation.gtf -L /pathway/to/gene-like_TE_annotation.gff3 -P mode`
+-R /pathway/to/transcripts_annotation.gtf -L /pathway/to/gene-like_TE_annotation.gff3 -P {mode}`
 
-ParasiTE have been build to work with Stringtie2 transcriptome annotation. 
-Stringtie2 allows to generate a de novo transcriptome annotation and help to identify potential new isoform that have not been identificate in the reference genome annotation.
-It also support short reads (eg. Illumina) or long reads (eg. PacBio or Oxford Nanopore) based genome alignements. 
+ParasiTE was built to work with Stringtie2 transcriptome annotation. 
+Stringtie2 allows to generate a de novo transcriptome annotation and help to identify potential new isoform that have not been identificate in the reference genome annotation. It support short reads (eg. Illumina) or long reads (eg. PacBio or Oxford Nanopore).
+
+For the -P mode
+
+- Transcriptome obtained with Stringtie2 from long reads alignement
+If the tramscript was obtained with  `Stringtie2 with the -L mode` you must use `-P SA`   
+If the tramscript was obtained with  `Stringtie2 with the -R mode` you must use `-P SR`  
+
+- Transcriptome obtained with Stringtie2 from short reads alignement
+you must use `-P SC`   
+
+- Transcriptome obtained with Stringtie2 'merged'
+you must use `-P SM`   
+
+- Home-made transciptome
+The home made transcriptome must follow the stringtie2 format bellow
+
+
+
+
+
 
 
 # Parasite help
