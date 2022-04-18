@@ -73,7 +73,7 @@ It also support short reads (eg. Illumina) or long reads (eg. PacBio or Oxford N
 
 `Rscript /patway/to/ParasiTE_v1.r -h`
 
-
+![](https://github.com/JBerthelier/ParasiTE/blob/master/Help_illustration.PNG)
 
 
 
