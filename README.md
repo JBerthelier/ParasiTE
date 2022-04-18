@@ -67,33 +67,40 @@ The command is :
 ParasiTE was built to work with Stringtie2 transcriptome annotation. 
 Stringtie2 allows to generate a de novo transcriptome annotation and help to identify potential new isoform that have not been identificate in the reference genome annotation. It support short reads (eg. Illumina) or long reads (eg. PacBio or Oxford Nanopore).
 
-**For the -P mode:**
+**For the -P mode**
 
-- Transcriptome obtained with Stringtie2 from long reads alignement:
+- Transcriptome obtained with Stringtie2 from long reads alignement
+If the tramscript was obtained with Stringtie2 with the -L mode` you must use `-P SL`   
+If the tramscript was obtained with Stringtie2 with the -R mode` you must use `-P SR`  
 
-If the tramscript was obtained with  `Stringtie2 with the -L mode` you must use `-P SA`   
-If the tramscript was obtained with  `Stringtie2 with the -R mode` you must use `-P SR`  
+- Transcriptome obtained with Stringtie2 from short reads alignement
+ you must use `-P SL`  
 
-- Transcriptome obtained with Stringtie2 from short reads alignement:
-
-no `-P` must be supplied
-
-- Transcriptome obtained with Stringtie2 'merged':
-
+- Transcriptome obtained with Stringtie2 'merged'
 you must use `-P SM`   
 
-- Home-made transciptome:
+- Home-made transciptome
+The home made transcriptome must follow the stringtie2 format bellow and be run with `-P SA`  
 
-The home made transcriptome must follow the stringtie2 format bellow
+| seqname  | source   | feature    | start   | end    | score    | strand   | frame    | attribute                                                             |
+| ------- |:---------:| ----------:| -------:|-------:|---------:|---------:|---------:|----------------------------------------------------------------------:|
+| 1       | Reference | transcript | 6788    | 9130   | 1000     | +        | .        |gene_id "ID.1"; transcript_id "ID.1.1";                    |
+| 1       | Reference | exon       | 6788    | 7069   | 1000     | .        | .        |gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";|
+| 1       | Reference | exon       | 8571    | 9130   | 1000     | .        | .        |gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "2";|
+| 1       | Reference | transcript | 3631    | 5899   | 1000     | +        | .        |gene_id "ID.1"; transcript_id "ID.1.2";                    |
+| 1       | Reference | exon       | 6788    | 7069   | 1000     | .        | .        |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "1";|
+| 1       | Reference | exon       | 7157    | 7450   | 1000     | .        | .        |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "2";|
+| 1       | Reference | exon       | 8571    | 8737   | 1000     | .        | .        |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "3";|
+| 1       | Reference | transcript | 3631    | 5899   | 1000     | +        | .        |gene_id "ID.2"; transcript_id "ID.2.1";                    |
+| 1       | Reference | exon       | 6788    | 7069   | 1000     | .        | .        |gene_id "ID.2"; transcript_id "ID.2.1"; exon_number_id "1";|
+etc...
 
-`1	phytozomev12	transcript	3631	5899	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; cov ""1.000000""; FPKM ""1.000000""; TPM ""1.000000"";"
-1	phytozomev12	exon	3631	3913	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; exon_number ""1"";"
-1	phytozomev12	exon	3996	4276	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; exon_number ""2"";"
-1	phytozomev12	exon	4486	4605	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; exon_number ""3"";"
-1	phytozomev12	exon	4706	5095	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; exon_number ""4"";"
-1	phytozomev12	exon	5174	5326	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; exon_number ""5"";"
-1	phytozomev12	exon	5439	5899	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; exon_number ""6"";"`
-...
+** Be careful ** 
+For now ParasiTE only works with a "seqname" haveing number has showed in table (no Characters allowed, in example '1' corespond to "chromosome 1").
+"Attribute" must followed the correct format as showed: 
+-for transcript:  gene_id "ID.1"; transcript_id "ID.1.1";
+-for exon: gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";
+otherwise ParasiTE is not able to works
 
 # Parasite help
 
