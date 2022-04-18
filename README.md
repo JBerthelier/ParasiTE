@@ -102,7 +102,7 @@ etc...
 **Be careful** 
 -For now ParasiTE only works with a "seqname" having a **number** has showed in table (no characters allowed, in example "1" coresponds to "chromosome 1").
 
-"Attribute" must followed the correct format as showed: 
+"Attribute" must followed the correct stringtie2 format as showed: 
 
 -for transcript:  gene_id "ID.1"; transcript_id "ID.1.1";
 -for exon: gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";
