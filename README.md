@@ -82,17 +82,17 @@ you must use `-P SM`
 - Home-made transciptome
 The home made transcriptome must follow the stringtie2 format bellow and be run with `-P SA`  
 
-| seqname| source | feature    | start | end  | score|strand|frame| attribute                                                 |
-| -------:|------:| ----------:| -----:|-----:|-----:|-----:|----:|----------------------------------------------------------:|
-| 1       |Ref    | transcript | 6788  | 9130 | 1000 | +    | .   |gene_id "ID.1"; transcript_id "ID.1.1";                    |
-| 1       |Ref    | exon       | 6788  | 7069 | 1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";|
-| 1       |Ref    | exon       | 8571  | 9130 | 1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "2";|
-| 1       |Ref    | transcript | 3631  | 5899 | 1000 | +    | .   |gene_id "ID.1"; transcript_id "ID.1.2";                    |
-| 1       |Ref    | exon       | 6788  | 7069 | 1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "1";|
-| 1       |Ref    | exon       | 7157  | 7450 | 1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "2";|
-| 1       |Ref    | exon       | 8571  | 8737 | 1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "3";|
-| 1       |Ref    | transcript | 3631  | 5899 | 1000 | +    | .   |gene_id "ID.2"; transcript_id "ID.2.1";                    |
-| 1       |Ref    | exon       | 6788  | 7069 | 1000 | .    | .   |gene_id "ID.2"; transcript_id "ID.2.1"; exon_number_id "1";|
+|seqname| source |feature    |start |end  |score|strand|frame|attribute                                                  |
+|-------:|------:|----------:|-----:|----:|----:|-----:|----:|----------------------------------------------------------:|
+|1       |Ref    |transcript |6788  |9130 |1000 | +    | .   |gene_id "ID.1"; transcript_id "ID.1.1";                    |
+|1       |Ref    |exon       |6788  |7069 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";|
+|1       |Ref    |exon       |8571  |9130 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "2";|
+|1       |Ref    |transcript |3631  |5899 |1000 | +    | .   |gene_id "ID.1"; transcript_id "ID.1.2";                    |
+|1       |Ref    |exon       |6788  |7069 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "1";|
+|1       |Ref    |exon       |7157  |7450 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "2";|
+|1       |Ref    |exon       |8571  |8737 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "3";|
+|1       |Ref    |transcript |3631  |5899 |1000 | +    | .   |gene_id "ID.2"; transcript_id "ID.2.1";                    |
+|1       |Ref    |exon       |6788  |7069 |1000 | .    | .   |gene_id "ID.2"; transcript_id "ID.2.1"; exon_number_id "1";|
 etc...
 
 **Be careful** 
