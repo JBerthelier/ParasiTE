@@ -4,9 +4,14 @@
 
 ParasiTE is a tool that aim to 
 1) identify TEs located in exonic or intronic region of genes 
-2) detect TEs that are part of genes and that contribute in alternative isoforms of genes (altTE-Gi) .
+2) detect TEs that are part of genes and that contribute in alternative isoforms of genes (altTE-Gi).
 
-#Steps
+ParasiTE detect candidates for TE-AS and TE-ATP events as illustarte below:
+
+![](https://github.com/JBerthelier/ParasiTE/blob/master/ParasiTE_altTE-Gi_illustration.png)
+
+
+# Main steps of ParasiTE
 
 ParasiTE is globally composed of five steps:
 
@@ -18,7 +23,6 @@ ParasiTE is globally composed of five steps:
 
 
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/ParasiTE_steps_illustration.png)
-
 
 # Prerequise to run ParasiTE in linux
 
