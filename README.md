@@ -71,9 +71,9 @@ Stringtie2 allows to generate a de novo transcriptome annotation and help to ide
 
 - Transcriptome obtained with Stringtie2 from long reads alignement
 
-If the tramscript was obtained with Stringtie2 with the -L mode` you must use `-P SL`   
+If the transcriptome was obtained with Stringtie2 with the -L mode you must use `-P SL`   
 
-If the tramscript was obtained with Stringtie2 with the -R mode` you must use `-P SR`  
+If the transcriptome was obtained with Stringtie2 with the -R mode you must use `-P SR`  
 
 - Transcriptome obtained with Stringtie2 from short reads alignement
  you must use `-P SL`  
