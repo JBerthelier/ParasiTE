@@ -56,49 +56,23 @@ ParasiTE outputs are:
 . List of TE-genes candidates
 . List of altTE-gene candidates
 
-_____________________________________
 
 # Run ParasiTE
 
 The command is :
 
-`Rscript /patway/to/ParasiTE_v1.r -T /Pathway/to/TE_annotation.gff3 -G /pathway/to/gene_annotation.gtf -R /pathway/to/transcripts_annotation.gtf -L /pathway/to/gene-like_TE_annotation.gff3 -P mode`
+`Rscript /patway/to/ParasiTE_v1.r -T /Pathway/to/TE_annotation.gff3 -G /pathway/to/gene_annotation.gtf 
+-R /pathway/to/transcripts_annotation.gtf -L /pathway/to/gene-like_TE_annotation.gff3 -P mode`
 
 ParasiTE have been build to work with Stringtie2 transcriptome annotation. 
 Stringtie2 allows to generate a de novo transcriptome annotation and help to identify potential new isoform that have not been identificate in the reference genome annotation.
 It also support short reads (eg. Illumina) or long reads (eg. PacBio or Oxford Nanopore) based genome alignements. 
 
 
-____________________________________________
+# Parasite help
 
-#Parasite help#
+`Rscript /patway/to/ParasiTE_v1.r -h`
 
-Usage: ParasiTE.r [options]
-Options:
-        -T CHARACTER, --transposons=CHARACTER
-                Annotation of transposable elements (.gff3)
-        -G CHARACTER, --genes=CHARACTER
-                Gene model annotation containing gene positions (.gff3)
-        -R CHARACTER, --transcripts=CHARACTER
-                Transcript annotation obtained by Stringtie, containing transcript and exon positions (.gff3)
-        -F NUMBER, --Tfalsepositive=NUMBER
-                Proportion of length of a TEs in a genes, to consider the gene as a TE-like gene, the gene annotation  will              
-                be removed for the analyses [default= 0.8] (80%)
-        -I NUMBER, --Tintragenic=NUMBER
-                Proportion of length of a TEs that overlap a gene to be considerated as intragenic [default= 0.8] (80%)
-        -i NUMBER, --Tambigous=NUMBER
-                Proportion of length of an exons that an TEs can partialy overlap to be exonic ambigous, [default= 0.8]          
-        -e NUMBER, --Texon=NUMBER
-                Minimum proportion of a TEs in an exon to be considered as exonic, [default= 0.8] (80%)
-        -n NUMBER, --Tneighbor=NUMBER
-                Maximum distance between a TE to a gene to be considerate as a neighbor TE, [default= 1000] (1000 bp)
-        -E NUMBER, --MinLexons=NUMBER
-                Min length of exons',  [default= 200] (0)
-        -m NUMBER, --MinLtransposons=NUMBER
-                Min length of transposons',  [default= 0] (0)
-        -M NUMBER, --MaxLtransposons=NUMBER
-                Maximun length of transposons',  [default= 30000] (0)
-        -h, --help                 Show this help message and exit
 
 
 
