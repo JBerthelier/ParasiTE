@@ -20,7 +20,7 @@ option_list = list(
               help="[required] Pathway to the transcriptome annotation.
                     No need -P option if you use a Stringtie annotation obtained with short read, or long read with the -L mode.
                     Use '-P SR' if you use a Stringtie annotation obtained with long reads and the -R option.
-                    Use '-P SM' if you want to use your own annotation that have been propery formated (.gff3)", metavar="character"),
+                    Use '-P SM' if you use your own annotation that have been propery formated (.gtf/.gff)", metavar="character"),
     make_option(c("-P", "--Pmode"), type="character", default="0", 
               help="(optional) Add this option if: 
                     -the transcriptome annotation have been built with long-reads sequencing by Stringtie2 using -R mode (use -P SR).
@@ -30,7 +30,7 @@ option_list = list(
     make_option(c("-F", "--Tfalsepositive"), type="character", default=0.8, 
               help="Percentage of a TEs that overlap a gene annotation to be considered as false positive, [default= %default] (80%)", metavar="number"), 
     make_option(c("-I", "--Tintragenic"), type="character", default=0.8, 
-              help="Minimum proportion (%) of TE lenght that overlap a gene to be considered as intragenic [default= %default]", metavar="number"),
+              help="Minimum proportion (%) of TE lenght that overlap a gene to be considered as intragenic [default= %default] (80%)", metavar="number"),
     make_option(c("-i", "--Tintron"), type="character", default=0.01,
               help="Minimum proportion (%) of an exons that a TE have to overlap to be considered as partial exonic, otherwise it is considered as intronic, [default= %default] (0.01%)", metavar="number"),
     make_option(c("-e", "--Texon1"), type="character", default=0.8, 
@@ -117,7 +117,7 @@ bedtools sort -i ../ParasiTE_output/pre-transposons_annotation.bed > ../ParasiTE
 
 #2.3/ De novo transcripts annotation
 #Selects the transcript annotation, converts and sorts in bed file
-system(paste("cp ",opt$transcripts," ../ParasiTE_output/Stringtie_annotation.gff3"))
+system(paste("cp ",opt$transcripts," ../ParasiTE_output/submited_transcripts_annotation.gff3"))
 system(paste("awk -F'\t' '$3~/transcript/'", opt$transcripts, "> ../ParasiTE_output/transcript_annotation.gff3"))
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/transcript_annotation.gff3 > ../ParasiTE_output/pre-transcript_annotation.bed && 
 bedtools sort -i ../ParasiTE_output/pre-transcript_annotation.bed > ../ParasiTE_output/transcript_annotation.bed"))
@@ -157,10 +157,10 @@ system(paste("cp ../ParasiTE_output/transcript_FP1.bed ../ParasiTE_output/Result
 #3.2/ (optional) Load of the gene-like TEs annotation file 
 #Check if a file is provided
 if(is.null(opt$transposonsgenes)){
-  print("No TE gene-like annotation provided", call.=FALSE)
+  cat("No [gene-like TE annotation] provided \n")
 cat(NULL,file="../ParasiTE_output/transcript_FP2.bed")
   } else{ 
-  print("A TE gene-like annotation is provided", call.=FALSE)
+  cat("A [gene-like TE annotation] is provided \n")
   
 #Converts and sorts the TE annotation file
 system(paste("cp ",opt$transposonsgenes, "../ParasiTE_output/TE-genes-like_annotation.gff3"))
@@ -184,7 +184,6 @@ transcript_annotation <- read.table("../ParasiTE_output/transcript_annotation.be
 
 #Check if transcripts that are gene-like TEs are existing 
 if (file.exists("../ParasiTE_output/transcript_FP.uniq.sorted.bed")&(file.size("../ParasiTE_output/transcript_FP.uniq.sorted.bed")>0)) {
-cat("parasiTE found genes-like transposons and removed the associated transcripts")
 #R loads the False Positives transcripts that are considered as gene-like TEs
 transcript_FP <-  read.table("../ParasiTE_output/transcript_FP.uniq.sorted.bed", header = FALSE, sep = '\t', check.names=FALSE)
 colnames(transcript_FP)<-c("chromosome","start", "end", "poin", "other", "strand","tool", "type", "point","id")
@@ -198,12 +197,13 @@ write.table(FP_list,file="../ParasiTE_output/FP_list.txt",sep = "\t",row.names=F
 system(paste("grep -vFwf ../ParasiTE_output/FP_list.txt ../ParasiTE_output/transcript_annotation.bed > ../ParasiTE_output/transcript_annotation_wo_FP.bed"))
 system(paste("grep -vFwf ../ParasiTE_output/FP_list.txt ../ParasiTE_output/exon_transcript_annotation.bed > ../ParasiTE_output/exon_transcript_annotation_wo_FP.bed"))
  } else{
-cat("no gene-like TEs false Positive found")
+cat("no gene-like TEs false Positive found \n")
 system(paste("cp ../ParasiTE_output/transcript_annotation.bed ../ParasiTE_output/transcript_annotation_wo_FP.bed"))
 system(paste("cp ../ParasiTE_output/exon_transcript_annotation.bed ../ParasiTE_output/exon_transcript_annotation_wo_FP.bed"))
  }
- 
+
 system(paste("cp ../ParasiTE_output/exon_transcript_annotation_wo_FP.bed ../ParasiTE_output/Results/STEP1_Remove_gene-like_TEs_transcripts/Cleaned_transcripts_annotation.bed"))
+cat("[STEP1] parasiTE has removed predicted genes-like TE transcripts \n")
 
 #4/ STEP2: Classification of TEs regarding to their location
 #4.1/ Discrimination of Intergenic TEs vs Intragenic TEs_exonic.bed
@@ -304,6 +304,8 @@ bedtools sort -i ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.final
 system(paste("cat ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.final.uniq.sorted.bed ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.final.uniq.sorted.bed ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.final.uniq.sorted.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round_1_round2_round3.bed &&
 sort ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round_1_round2_round3.bed | uniq > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round_1_round2_round3.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round_1_round2_round3.uniq.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round_1_round2_round3.uniq.sorted.bed"))
+
+cat("[STEP2] parasiTE has discriminated intragenic and intergenic TEs \n")
 
 #5/ STEP3: Detection of exonic TE candidates
 
@@ -429,12 +431,14 @@ system(paste("mv  ../ParasiTE_output/Intragenic_intronic_TEs_genes.labeled.bed .
 
 system(paste("cat ../ParasiTE_output/Results/STEP3_exonic_intronic_TEs/Full_exonic_TEs_method1.bed ../ParasiTE_output/Results/STEP3_exonic_intronic_TEs/Fragmented_exonic_TEs_method2.bed ../ParasiTE_output/Results/STEP3_exonic_intronic_TEs/Partial_exonic_TEs_method3.bed  > ../ParasiTE_output/Candidate_TEs.bed"))
 
+cat("[STEP3] parasiTE has discriminated exonic and intronic TEs \n")
+
 #6.5/ Extraction of slicing_site
 system(paste("../Dependencies/Splicing_sites/extract_splice_sites.py ", opt$transcripts," > ../ParasiTE_output/splicing_sites.gff"))
 
 #7/ Loading of Stringtie2 input data
 # 7.1/ Stringtie transcript annotation is loaded
-cat("Loading input data")
+
 All_transcript <-  read.table("../ParasiTE_output/transcript_annotation_wo_FP.bed", header = FALSE, sep = '\t', check.names=FALSE)
 colnames(All_transcript)<-c("chromosome","start", "end", "poin", "other", "strand","tool", "type", "point","id")
 
@@ -703,13 +707,16 @@ AS_TEcandidates_ss <- read.table("../ParasiTE_output/TEcandidates_splicing_sites
 AS_TEcandidates_ss <- AS_TEcandidates_ss[4]
 colnames(AS_TEcandidates_ss)<-c("TE_id")
 
+
+cat("[STEP4] parasiTE has found TE-G candidates \n")
+
 #13/CATANA
 
-cat("Classification of the AS and ATP events")
+cat("Classification of the TE-AS and TE-ATP events \n")
 
 system(paste("rm -Rf ../Dependencies/CATANA/Classification"))
 
-system(paste("cd ../Dependencies/CATANA && perl CATANA.pl -i ../../ParasiTE_output/Stringtie_annotation.gff3 -o Classification"))
+system(paste("cd ../Dependencies/CATANA && perl CATANA.pl -i ../../ParasiTE_output/submited_transcripts_annotation.gff3 -o Classification"))
 
 #MXE are not take in account
 system(paste("cd ../Dependencies/CATANA/Classification && cat A5SS.gff A3SS.gff SE.gff RI.gff MSE.gff > Alternative_splicing_events.gff &&
@@ -1004,6 +1011,8 @@ three_check <- detailed_join_gene$Exonic_id %in% three_results$Exonic_id
 detailed_join_gene <- cbind(detailed_join_gene,three_check)
 }
 
+cat("[STEP5] parasiTE has found altTE-G candidates \n")
+
 #19/ First output and add of information for extra outputs
 #19.1/TE-genes
 
@@ -1137,7 +1146,7 @@ write.table(detailed_join_gene_alternative,file="../ParasiTE_output/Results/STEP
 #20.5 Cleaning
 system(paste("rm -f ../ParasiTE_output/* 2>/dev/null"))
 
-cat("Finished")
+cat("\nParasiTE has finished, results are in ParasiTE_output directory \n")
 
 
 
