@@ -82,8 +82,8 @@ you must use `-P SM`
 - Home-made transciptome
 The home made transcriptome must follow the stringtie2 format bellow and be run with `-P SA`  
 
-| seqname  | source   | feature    | start   | end    | score    | strand   | frame    | attribute                                                             |
-| ------- |:---------:| ----------:| -------:|-------:|---------:|---------:|---------:|----------------------------------------------------------------------:|
+| seqname  | source   | feature    | start   | end    | score    | strand   | frame    | attribute                                                 |
+| ------- |:---------:| ----------:| -------:|-------:|---------:|---------:|---------:|----------------------------------------------------------:|
 | 1       | Reference | transcript | 6788    | 9130   | 1000     | +        | .        |gene_id "ID.1"; transcript_id "ID.1.1";                    |
 | 1       | Reference | exon       | 6788    | 7069   | 1000     | .        | .        |gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";|
 | 1       | Reference | exon       | 8571    | 9130   | 1000     | .        | .        |gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "2";|
@@ -95,7 +95,7 @@ The home made transcriptome must follow the stringtie2 format bellow and be run 
 | 1       | Reference | exon       | 6788    | 7069   | 1000     | .        | .        |gene_id "ID.2"; transcript_id "ID.2.1"; exon_number_id "1";|
 etc...
 
-** Be careful ** 
+**Be careful** 
 For now ParasiTE only works with a "seqname" haveing number has showed in table (no Characters allowed, in example '1' corespond to "chromosome 1").
 "Attribute" must followed the correct format as showed: 
 -for transcript:  gene_id "ID.1"; transcript_id "ID.1.1";
