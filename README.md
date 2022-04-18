@@ -6,7 +6,8 @@ ParasiTE is a tool that aim to
 1) identify TEs located in exonic or intronic region of genes 
 2) detect TEs that are part of genes and that contribute in alternative isoforms of genes (altTE-Gi).
 
-ParasiTE detect candidates for TE-AS and TE-ATP events as illustarte below:
+ParasiTE detect candidates for TE-AS and TE-ATP events as illustrate below:
+
 
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/ParasiTE_altTE-Gi_illustration.png)
 
