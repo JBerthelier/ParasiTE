@@ -74,7 +74,7 @@ If the tramscript was obtained with  `Stringtie2 with the -L mode` you must use 
 If the tramscript was obtained with  `Stringtie2 with the -R mode` you must use `-P SR`  
 
 - Transcriptome obtained with Stringtie2 from short reads alignement
-you must use `-P SC`   
+no `-P` must be supplied
 
 - Transcriptome obtained with Stringtie2 'merged'
 you must use `-P SM`   
