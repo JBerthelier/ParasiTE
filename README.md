@@ -70,7 +70,9 @@ Stringtie2 allows to generate a de novo transcriptome annotation and help to ide
 **For the -P mode**
 
 - Transcriptome obtained with Stringtie2 from long reads alignement
+
 If the tramscript was obtained with Stringtie2 with the -L mode` you must use `-P SL`   
+
 If the tramscript was obtained with Stringtie2 with the -R mode` you must use `-P SR`  
 
 - Transcriptome obtained with Stringtie2 from short reads alignement
@@ -99,8 +101,10 @@ etc...
 -For now ParasiTE only works with a "seqname" having a **number** has showed in table (no characters allowed, in example "1" coresponds to "chromosome 1").
 
 "Attribute" must followed the correct format as showed: 
+
 -for transcript:  gene_id "ID.1"; transcript_id "ID.1.1";
 -for exon: gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";
+
 otherwise ParasiTE is not able to works
 
 # Parasite help
