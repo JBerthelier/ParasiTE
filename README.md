@@ -20,7 +20,13 @@ ParasiTE is globally composed of five steps:
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/ParasiTE_steps_illustration.png)
 
 
-#Outputs
+# Prerequise to run ParasiTE in linux
+
+R (version 3.6.1 was used, others were not tested)
+R libraries: optparse , stringr , data.table , dplyr , splitstackshape , tidyr
+bedtools
+
+# Outputs
 
 ParasiTE outputs are:
 
@@ -29,10 +35,6 @@ ParasiTE outputs are:
 . List of TE-related alternative gene isoforms
 ______________________________________
 
-#Prerequise to run ParasiTE
-
-R (version XXX have been tested)
-R packages: optparse , stringr , data.table , dplyr , splitstackshape , tidyr
 
 #Input data
 
