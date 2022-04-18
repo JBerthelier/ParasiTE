@@ -67,26 +67,33 @@ The command is :
 ParasiTE was built to work with Stringtie2 transcriptome annotation. 
 Stringtie2 allows to generate a de novo transcriptome annotation and help to identify potential new isoform that have not been identificate in the reference genome annotation. It support short reads (eg. Illumina) or long reads (eg. PacBio or Oxford Nanopore).
 
-For the -P mode
+**For the -P mode:**
 
-- Transcriptome obtained with Stringtie2 from long reads alignement
+- Transcriptome obtained with Stringtie2 from long reads alignement:
+
 If the tramscript was obtained with  `Stringtie2 with the -L mode` you must use `-P SA`   
 If the tramscript was obtained with  `Stringtie2 with the -R mode` you must use `-P SR`  
 
-- Transcriptome obtained with Stringtie2 from short reads alignement
+- Transcriptome obtained with Stringtie2 from short reads alignement:
+
 no `-P` must be supplied
 
-- Transcriptome obtained with Stringtie2 'merged'
+- Transcriptome obtained with Stringtie2 'merged':
+
 you must use `-P SM`   
 
-- Home-made transciptome
+- Home-made transciptome:
+
 The home made transcriptome must follow the stringtie2 format bellow
 
-
-
-
-
-
+`1	phytozomev12	transcript	3631	5899	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; cov ""1.000000""; FPKM ""1.000000""; TPM ""1.000000"";"
+1	phytozomev12	exon	3631	3913	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; exon_number ""1"";"
+1	phytozomev12	exon	3996	4276	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; exon_number ""2"";"
+1	phytozomev12	exon	4486	4605	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; exon_number ""3"";"
+1	phytozomev12	exon	4706	5095	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; exon_number ""4"";"
+1	phytozomev12	exon	5174	5326	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; exon_number ""5"";"
+1	phytozomev12	exon	5439	5899	1000	+	.	"gene_id ""AT1G.01010""; transcript_id ""AT1G.01010.1""; exon_number ""6"";"`
+...
 
 # Parasite help
 
