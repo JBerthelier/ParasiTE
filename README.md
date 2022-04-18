@@ -62,9 +62,7 @@ _____________________________________
 
 The command is :
 
-<script>
-Rscript /patway/to/ParasiTE_v1.r -T /Pathway/to/TE_annotation.gff3 -G /pathway/to/gene_annotation.gtf -R /pathway/to/transcripts_annotation.gtf -L /pathway/to/gene-like_TE_annotation.gff3 -P mode
-</script>
+`Rscript /patway/to/ParasiTE_v1.r -T /Pathway/to/TE_annotation.gff3 -G /pathway/to/gene_annotation.gtf -R /pathway/to/transcripts_annotation.gtf -L /pathway/to/gene-like_TE_annotation.gff3 -P mode`
 
 ParasiTE have been build to work with Stringtie2 transcriptome annotation. 
 Stringtie2 allows to generate a de novo transcriptome annotation and help to identify potential new isoform that have not been identificate in the reference genome annotation.
