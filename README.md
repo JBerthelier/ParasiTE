@@ -26,7 +26,7 @@ ParasiTE is globally composed of five steps:
 
 # Prerequise to run ParasiTE in linux
 
-1) R (version 3.6.1 was used, others were not tested) https://www.r-project.org/
+1) R (version 3.6.1 was used) https://www.r-project.org/
 
 2) R libraries: 
 - optparse https://cran.r-project.org/web/packages/optparse/readme/README.html
