@@ -100,7 +100,7 @@ you must use `-P SC`
 Be careful in this format tu exon_number order is different than for Stringtie output
 In this case exon number are according to the transcript strand.  
 
-
+![](https://github.com/JBerthelier/ParasiTE/blob/master/Help_numbering.png)
 
 
 
