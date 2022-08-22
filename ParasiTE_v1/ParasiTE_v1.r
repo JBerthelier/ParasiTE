@@ -18,7 +18,7 @@ option_list = list(
               help="[required] Pathway to the gene model annotation (.gtf/.gff)", metavar="character"),   
     make_option(c("-R", "--transcripts"), type="character", default=NULL, 
               help="[required] Pathway to the transcriptome annotation.
-                    No need -P option if you use a Stringtie annotation obtained with short read, or long read with the -L mode.
+                    No need -P option if you use a Stringtie2 annotation obtained with short read, or long read with the -L mode.
                     Use '-P SR' if you use a Stringtie annotation obtained with long reads and the -R option.
                     Use '-P SM' if you use your own annotation that have been propery formated (.gtf/.gff)", metavar="character"),
     make_option(c("-P", "--Pmode"), type="character", default="0", 
@@ -82,7 +82,12 @@ script.basename <- dirname(script.name)
 
 setwd(script.basename)
 
-if (file.exists("../ParasiTE_output"))
+if (file.exists("../ParasiTE_output")) {
+cat("The folder ../ParasiTE_output already exists, please rename or delet it ")
+stop()
+} else {
+ cat("The folder ../ParasiTE_output does not exist , creating ...")
+}
 system(paste("rm -Rf ../ParasiTE_output"))
 system(paste("mkdir ../ParasiTE_output"))
 system(paste("mkdir ../ParasiTE_output/Results"))
@@ -448,23 +453,19 @@ colnames(transposons)<-c("techromosome","testart", "teend", "tename", "other", "
 #check if the cov is indicated for exon, beacause Stringtie do not give the coverage if we use the option -R in Stringtie. Therefore this cause problem for Parasite.
 #Here, the script check if the coverage is indicated, if not it add a false one 0.000000, to make the script work.
 
-#FOR ANNOTATION OF ARAPORT11 
-if (opt$Pmode=="SC"){
-transposons$idexon <- ifelse(grepl("cov",transposons$idexon),transposons$idexon,paste0(transposons$idexon," cov 0.000000;"))
-}
 #FOR ANNOTATION OF STRINGTIE R 
 if (opt$Pmode=="SR"){
-transposons$idexon <- ifelse(grepl("cov",transposons$idexon),transposons$idexon,paste0(transposons$idexon,"cov0.000000;"))
+transposons$idexon <- ifelse(grepl("cov",transposons$idexon),transposons$idexon,paste0(transposons$idexon,"covNA;"))
 }
 
 #FOR ANNOTATION OF Stringtie Merged files
 if (opt$Pmode=="SM"){
-transposons$idexon <- ifelse(grepl("cov",transposons$idexon),transposons$idexon,paste0(transposons$idexon,"cov0.000000;"))
+transposons$idexon <- ifelse(grepl("cov",transposons$idexon),transposons$idexon,paste0(transposons$idexon,"covNA;"))
 }
 
-#FOR ANNOTATION OF atRDT3 
+#FOR CUSTOM ANNOTATION 
 if (opt$Pmode=="SA"){
-transposons$idexon <- ifelse(grepl("cov",transposons$idexon),transposons$idexon,paste0(transposons$idexon," cov 0.000000;"))
+transposons$idexon <- ifelse(grepl("cov",transposons$idexon),transposons$idexon,paste0(transposons$idexon," cov NA;"))
 }
 
 #7.3/ Stringtie exon annotation is loaded
@@ -474,22 +475,15 @@ colnames(All_exons)<-c("chromosome","start", "end", "poin", "other", "strand","t
 #check if the cov is indicated for exon, beacause Stringtie do not give the coverage if we use the option -R in Stringtie. Therefore this cause problem for Parasite.
 #Here, the script check if the coverage is indicated, if not it add a false one 0.000000, to make the script work.
 
-#FOR ANNOTATION OF ARAPORT11 
-if (opt$Pmode=="SC"){
-All_exons$id <- ifelse(grepl("cov",All_exons$id),All_exons$id,paste0(All_exons$id," cov 0.000000;"))
-}
-#FOR ANNOTATION OF STRINGTIE R 
-#RAS
-
 #FOR ANNOTATION OF Stringtie Merged files
 if (opt$Pmode=="SM"){
-All_transcript$id <- ifelse(grepl("cov",All_transcript$id),All_transcript$id,paste0(All_transcript$id,"cov 1.000000; FPKM 1.000000; TPM 1.000000;"))
-All_exons$id <- ifelse(grepl("cov",All_exons$id),All_exons$id,paste0(All_exons$id," cov 0.000000;"))
+All_transcript$id <- ifelse(grepl("cov",All_transcript$id),All_transcript$id,paste0(All_transcript$id,"cov NA; FPKM NA; TPM NA;"))
+All_exons$id <- ifelse(grepl("cov",All_exons$id),All_exons$id,paste0(All_exons$id," cov NA;"))
 }
 
 if (opt$Pmode=="SA"){
-All_transcript$id <- ifelse(grepl("cov",All_transcript$id),All_transcript$id,paste0(All_transcript$id," cov 1.000000; FPKM 1.000000; TPM 1.000000;"))
-All_exons$id <- ifelse(grepl("cov",All_exons$id),All_exons$id,paste0(All_exons$id," cov 0.000000;"))
+All_transcript$id <- ifelse(grepl("cov",All_transcript$id),All_transcript$id,paste0(All_transcript$id," cov NA; FPKM NA; TPM NA;"))
+All_exons$id <- ifelse(grepl("cov",All_exons$id),All_exons$id,paste0(All_exons$id," cov NA;"))
 }
 
 # 8/ Important informations are extracted
