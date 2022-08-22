@@ -93,17 +93,17 @@ Moreover. Stringtie2 supports short reads (eg. Illumina) or long reads (eg. PacB
 3) Transcriptomes obtained with Stringtie2 'merged'
 you must use `-P SM`   
 
-4) Custom transcriptome obatined by stringtie2 Merge option `-P SA` or by yourself
+4) Transcriptome obtained by stringtie2 Merge option `-P SA` 
 
 5) Custom transcriptome following the below format (such as "/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf" )
 you must use `-P SC`
-Be careful in this format tu exon_number order is different than for Stringtie output
-In this case exon number are according to the transcript strand.  
+
+Be careful in this format the exon numbering is different than for Stringtie2 transcripts.
+In this case exon numbering are related to the transcript sens, please see example below: 
 
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/Help_numbering.png)
 
-
-
+For this type of custom transcriptome 
 
 |seqname|source|feature   |start |end  |score|strand|frame|attribute                                                  |
 |------:|-----:|---------:|-----:|----:|----:|-----:|----:|----------------------------------------------------------:|
@@ -122,12 +122,12 @@ etc...
 **Be careful** 
 -For now, ParasiTE only works with a "seqname" having a **number** has showed in table (no characters allowed, in example "1" corresponds to "chromosome 1").
 
-"Attribute" must followed the correct stringtie2 format as showed: 
+"Attribute" must followed the correct format as showed: 
 
 -for transcript:  gene_id "ID.1"; transcript_id "ID.1.1";
 -for exon: gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";
 
-otherwise ParasiTE is not able to works
+otherwise ParasiTE is not able to works properly
 
 # Run Parasite Demo data
 
