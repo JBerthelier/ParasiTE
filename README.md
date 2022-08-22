@@ -29,12 +29,12 @@ ParasiTE is globally composed of five steps:
 1) R (version 3.6.1 was tested) https://www.r-project.org/
 
 2) R libraries: 
-- [optparse](https://cran.r-project.org/web/packages/optparse/readme/README.html)  install.packages("optparse")
-- [stringr](https://cran.r-project.org/web/packages/stringr/readme/README.html) install.packages("stringr")
-- [data.table](https://www.rdocumentation.org/packages/data.table/versions/1.14.2) install.packages("data.table")
-- [dplyr](https://www.r-project.org/nosvn/pandoc/dplyr.html) install.packages("dplyr")
-- [splitstackshape](https://www.r-project.org/nosvn/pandoc/splitstackshape.html) install.packages("splitstackshape")
-- [tidyr](https://www.tidyverse.org/blog/2019/09/tidyr-1-0-0/) install.packages("tidyr")
+- [optparse](https://cran.r-project.org/web/packages/optparse/readme/README.html)  `install.packages("optparse")`
+- [stringr](https://cran.r-project.org/web/packages/stringr/readme/README.html)  `install.packages("stringr")`
+- [data.table](https://www.rdocumentation.org/packages/data.table/versions/1.14.2) `install.packages("data.table")`
+- [dplyr](https://www.r-project.org/nosvn/pandoc/dplyr.html) `install.packages("dplyr")`
+- [splitstackshape](https://www.r-project.org/nosvn/pandoc/splitstackshape.html) `install.packages("splitstackshape")`
+- [tidyr](https://www.tidyverse.org/blog/2019/09/tidyr-1-0-0/) `install.packages("tidyr")`
  
 3) [bedtools](https://bedtools.readthedocs.io/en/latest/index.html)
 you can install locally or with conda 
