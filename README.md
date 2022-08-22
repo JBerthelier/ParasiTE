@@ -140,7 +140,7 @@ In /ParasiTE_output/Results/STEP5_altTE-G_candidates/
 
 In -List_altTE-G.tab-
 
-|seqname                         |description                                                       |
+|Column name                     |description                                                       |
 |-------------------------------:|-----------------------------------------------------------------:|
 |TE_gene                         |The id of the TE-gene event                                       | 
 |Gene_id                         |The id of the gene                                                |
@@ -160,28 +160,6 @@ In -List_altTE-G.tab-
 |middle                          |Count of events happening at the last exon of the gene (5` -> 3`) |
 |last                            |Count of events happening at middle exon of the gene (5` -> 3`)   |
 |single                          |Count of events for single exon of the gene (5` -> 3`)            |
-
-
-
-
-"TE_gene"	
-"Gene_id"	
-"Total_number_transcripts"
-"Total_transcripts_with_this_TEs"
-"total_exon_number"
-"Freq_TE_isoform"
-"TE_id"
-"TE_chromosome"
-"TE_start"
-"TE_end"
-"TE_localisation"
-"method"
-"Alternative_splicing"
-"Alternative_transcription"
-"begining"
-"middle"
-"ending"
-"single"
 
 
 # Parasite help
