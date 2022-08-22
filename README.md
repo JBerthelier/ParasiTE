@@ -37,6 +37,12 @@ ParasiTE is globally composed of five steps:
 - [tidyr](https://www.tidyverse.org/blog/2019/09/tidyr-1-0-0/)
  
 3) [bedtools](https://bedtools.readthedocs.io/en/latest/index.html)
+you can install locally or with conda 
+conda install bedtools
+
+4) [BEDOPS](https://bedops.readthedocs.io/en/latest/index.html) 
+you can install locally or with conda 
+conda install -c bioconda bedops
 
 # Input data
 
@@ -118,7 +124,7 @@ otherwise ParasiTE is not able to works
 
 tar -xvzf Demo_data.tar.gz
 
-Rscript /Fullpathway/ParasiTE-master/ParasiTE_v1/ParasiTE_v1.r -T /Fullpathway/ParasiTE-master/Demo_data/TEs_urgi_tair10.min200.gff3 -R /Fullpathway/ParasiTE-master/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf -G /Fullpathway/ParasiTE-master/Demo_data/Athaliana_447_Araport11.gene.gff3 -L /Fullpathway/ParasiTE-master/Demo_data/TAIR10-Panda_cat_TE_gene-like.gff3 -P SC
+Rscript /Fullpathway/ParasiTE-master/ParasiTE_v1/ParasiTE_v1.r -T /Fullpathway/ParasiTE-master/Demo_data/TEs_urgi_tair10.min200.gff3 -R /Fullpathway/ParasiTE-master/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf -G /Fullpathway/ParasiTE-master/Demo_data/Athaliana_447_Araport11.gene.gff3 -L /Fullpathway/ParasiTE-master/Demo_data/TAIR10-Panda_cat_TE_gene-like.gff3 -P SA
 
 
 
