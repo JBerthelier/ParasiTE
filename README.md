@@ -93,9 +93,17 @@ Moreover. Stringtie2 supports short reads (eg. Illumina) or long reads (eg. PacB
 3) Transcriptomes obtained with Stringtie2 'merged'
 you must use `-P SM`   
 
-4) Custom transcriptome obatined by stringtie2 Merge option `-P SA`
+4) Custom transcriptome obatined by stringtie2 Merge option `-P SA` or by yourself
 
-5) Custom transcriptome following the below format (such as "/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf" ) 
+5) Custom transcriptome following the below format (such as "/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf" )
+you must use `-P SC`
+Be careful in this format tu exon_number order is different than for Stringtie output
+In this case exon number are according to the transcript strand.  
+
+
+
+
+
 
 |seqname|source|feature   |start |end  |score|strand|frame|attribute                                                  |
 |------:|-----:|---------:|-----:|----:|----:|-----:|----:|----------------------------------------------------------:|
@@ -109,6 +117,7 @@ you must use `-P SM`
 |1      |Ref   |transcript|3631  |5899 |1000 | +    | .   |gene_id "ID.2"; transcript_id "ID.2.1";                    |
 |1      |Ref   |exon      |6788  |7069 |1000 | .    | .   |gene_id "ID.2"; transcript_id "ID.2.1"; exon_number_id "1";|
 etc...
+
 
 **Be careful** 
 -For now, ParasiTE only works with a "seqname" having a **number** has showed in table (no characters allowed, in example "1" corresponds to "chromosome 1").
@@ -124,7 +133,7 @@ otherwise ParasiTE is not able to works
 
 tar -xvzf Demo_data.tar.gz
 
-Rscript /Fullpathway/ParasiTE-master/ParasiTE_v1/ParasiTE_v1.r -T /Fullpathway/ParasiTE-master/Demo_data/TEs_urgi_tair10.min200.gff3 -R /Fullpathway/ParasiTE-master/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf -G /Fullpathway/ParasiTE-master/Demo_data/Athaliana_447_Araport11.gene.gff3 -L /Fullpathway/ParasiTE-master/Demo_data/TAIR10-Panda_cat_TE_gene-like.gff3 -P SA
+Rscript /Fullpathway/ParasiTE-master/ParasiTE_v1/ParasiTE_v1.r -T /Fullpathway/ParasiTE-master/Demo_data/TEs_urgi_tair10.min200.gff3 -R /Fullpathway/ParasiTE-master/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf -G /Fullpathway/ParasiTE-master/Demo_data/Athaliana_447_Araport11.gene.gff3 -L /Fullpathway/ParasiTE-master/Demo_data/TAIR10-Panda_cat_TE_gene-like.gff3 -P SC
 
 # Detailled outputs
 
