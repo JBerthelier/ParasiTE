@@ -140,26 +140,26 @@ In /ParasiTE_output/Results/STEP5_altTE-G_candidates/
 
 In -List_altTE-G.tab-
 
-|Column name                     |description                                                       |
-|-------------------------------:|-----------------------------------------------------------------:|
-|TE_gene                         |The id of the TE-gene event                                       | 
-|Gene_id                         |The id of the gene                                                |
-|Total_number_transcripts        |Number of isoform transcribed by the gene                         |
-|Total_transcripts_with_TE       |Number of isoform transcribed by the gene overlapped by the TE    |
-|total_exon_number               |Number of isoform transcribed by the gene overlapping the TE      |
-|Freq_TE_isoform                 |Frequences of isoform overlapped by the TEs for the gene          |
-|TE_id                           |The id of the TE                                                  |
-|TE_chromosome                   |The Chromosome location of the TE annotation                      |
-|TE_start                        |The start location of the TE annotation                           |
-|TE_end                          |The end location of the TE annotation                             |
-|TE_localisation                 |intragenic or intergenic                                          |
-|method                          |ParasiTE method used to dtect the exonic TE (M1 or M2 or M3)      |
-|Alternative_splicing            |The predicted AS event caused by the TE                           |
-|Alternative_transcription       |The predicted ATP event caused by the TE                          |
-|first                           |Count of events happening at the first exon of the gene (5` -> 3`)|
-|middle                          |Count of events happening at the last exon of the gene (5` -> 3`) |
-|last                            |Count of events happening at middle exon of the gene (5` -> 3`)   |
-|single                          |Count of events for single exon of the gene (5` -> 3`)            |
+|Column name                     |description                                                                      |
+|-------------------------------:|--------------------------------------------------------------------------------:|
+|TE_gene                         |The id of the TE-gene event                                                      | 
+|Gene_id                         |The id of the gene                                                               |
+|Total_number_transcripts        |Number of isoform transcribed by the gene                                        |
+|Total_transcripts_with_TE       |Number of isoform transcribed by the gene overlapped by the TE                   |
+|total_exon_number               |Number of isoform transcribed by the gene overlapping the TE                     |
+|Freq_TE_isoform                 |Frequences of isoform overlapped by the TEs for the gene                         |
+|TE_id                           |The id of the TE                                                                 |
+|TE_chromosome                   |The Chromosome location of the TE annotation                                     |
+|TE_start                        |The start location of the TE annotation                                          |
+|TE_end                          |The end location of the TE annotation                                            |
+|TE_localisation                 |intragenic or intergenic                                                         |
+|method                          |ParasiTE method used to dtect the exonic TE (M1 or M2 or M3)                     |
+|Alternative_splicing            |The predicted AS event caused by the TE                                          |
+|Alternative_transcription       |The predicted ATP event caused by the TE                                         |
+|first                           |Count of TE overlapping with exons of gene transcripts at the first exon (5'->3')|
+|middle                          |Count of TE overlapping with exons of gene transcripts at middle exon (5'->3')   |
+|last                            |Count of TE overlapping with exons of gene transcripts at the last exon (5'->3') |
+|single                          |Count of TE overlapping with single-exon of gene transcripts (5'->3')            | 
 
 
 # Parasite help
