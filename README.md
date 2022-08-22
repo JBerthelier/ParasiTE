@@ -38,11 +38,11 @@ ParasiTE is globally composed of five steps:
  
 3) [bedtools](https://bedtools.readthedocs.io/en/latest/index.html)
 you can install locally or with conda 
-conda install bedtools
+`conda install bedtools`
 
 4) [BEDOPS](https://bedops.readthedocs.io/en/latest/index.html) 
 you can install locally or with conda 
-conda install -c bioconda bedops
+`conda install -c bioconda bedops`
 
 # Input data
 
