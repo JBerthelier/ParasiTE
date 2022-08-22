@@ -87,7 +87,7 @@ Moreover. Stringtie2 supports short reads (eg. Illumina) or long reads (eg. PacB
 3) Transcriptomes obtained with Stringtie2 'merged'
 you must use `-P SM`   
 
-4) Custom transciptomes
+4) Custom transciptomes (Such as Demo data)
 The custom transcriptome must follows the stringtie2 format as showed bellow and be run with `-P SA`  
 
 |seqname|source|feature   |start |end  |score|strand|frame|attribute                                                  |
@@ -112,6 +112,15 @@ etc...
 -for exon: gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";
 
 otherwise ParasiTE is not able to works
+
+# Run Parasite Demo data
+
+tar -xvzf Demo_data.tar.gz
+
+Rscript /patway/to/ParasiTE_v1.r -T /Pathway/to/TE_annotation.gff3 -G /pathway/to/gene_annotation.gtf 
+-R /pathway/to/transcripts_annotation.gtf -L /pathway/to/gene-like_TE_annotation.gff3 -P {mode}
+
+
 
 # Parasite help
 
