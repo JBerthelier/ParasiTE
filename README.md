@@ -101,7 +101,7 @@ In this case exon numbering are related to the transcript sens, please see examp
 
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/Help_numbering.png)
 
-For this type of custom transcriptome 
+For those two types of custom transcriptome (SC or SA) the attribute must be like below:
 
 |seqname|source|feature   |start |end  |score|strand|frame|attribute                                                  |
 |------:|-----:|---------:|-----:|----:|----:|-----:|----:|----------------------------------------------------------:|
