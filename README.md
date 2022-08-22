@@ -136,7 +136,7 @@ In /ParasiTE_output/Results/STEP4_TE-G_candidates/
 In /ParasiTE_output/Results/STEP5_altTE-G_candidates/
 
 - List_altTE-G.tab ## List of Genes that are involved in altTE-Gi with a TE. 
-- List_altTE-G_exonic_level.tab ## List of exons that are involved in alternative isoforms with a TE. 
+- List_altTE-G_exonic_level.tab ## List of exons that are involved in altTE-Gi with a TE. 
 
 In "List_altTE-G.tab"
 
