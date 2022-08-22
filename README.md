@@ -90,12 +90,10 @@ Moreover. Stringtie2 supports short reads (eg. Illumina) or long reads (eg. PacB
 2) Transcriptomes obtained with Stringtie2 from short reads alignement
  you must use `-P SL`  
 
-3) Transcriptomes obtained with Stringtie2 'merged'
-you must use `-P SM`   
+3) Transcriptome obtained by stringtie2 Merge option or custom transcriptome following the same format as Stringtie2
+you must use `-P SA`   
 
-4) Transcriptome obtained by stringtie2 Merge option `-P SA` 
-
-5) Custom transcriptome following the below format (such as "/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf" )
+4) Custom transcriptome following the below format (such as "/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf" )
 you must use `-P SC`
 
 Be careful in this format the exon numbering is different than for Stringtie2 transcripts.
