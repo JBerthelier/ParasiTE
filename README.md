@@ -129,9 +129,9 @@ otherwise ParasiTE is not able to works properly
 
 # Run Parasite Demo data
 
-tar -xvzf Demo_data.tar.gz
+`tar -xvzf Demo_data_Araport11.tar.gz`
 
-Rscript /Fullpathway/ParasiTE-master/ParasiTE_v1/ParasiTE_v1.r -T /Fullpathway/ParasiTE-master/Demo_data_Araport11/TEs_urgi_tair10.min200.gff3 -R /Fullpathway/ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.transcript_exons.for_ParasiTE_SC.gtf -G /Fullpathway/ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.gene.gff3 -L /Fullpathway/ParasiTE-master/Demo_data_Araport11/TAIR10-Panda_cat_TE_gene-like.gff3 -P SC
+`Rscript /Fullpathway/ParasiTE-master/ParasiTE_v1/ParasiTE_v1.r -T /Fullpathway/ParasiTE-master/Demo_data_Araport11/TEs_urgi_tair10.min200.gff3 -R /Fullpathway/ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.transcript_exons.for_ParasiTE_SC.gtf -G /Fullpathway/ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.gene.gff3 -L /Fullpathway/ParasiTE-master/Demo_data_Araport11/TAIR10-Panda_cat_TE_gene-like.gff3 -P SC`
 
 # Detailled outputs
 
