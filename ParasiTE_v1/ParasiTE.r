@@ -7,7 +7,7 @@ library(stringr)
 library(dplyr)
 library(tidyr)
 
-#ParasiTE was wrote by Jeremy Berthelier, 2022, Plant Epigenetics Unit, Okinawa Institute of Science and Technology, Japan
+#ParasiTE_v1 was wrote by Jérémy Berthelier, 2022, Plant Epigenetics Unit, Okinawa Institute of Science and Technology, Japan
 
 #0/ Option and help message
 option_list = list(
@@ -17,19 +17,23 @@ option_list = list(
               help="[required] Pathway to the gene model annotation (.gtf/.gff)", metavar="character"),   
     make_option(c("-R", "--transcripts"), type="character", default=NULL, 
               help="[required] Pathway to the transcriptome annotation.
-                    No need -P option if you use a Stringtie annotation obtained with short read, or long read with the -L mode.
-                    Use '-P SR' if you use a Stringtie annotation obtained with long reads and the -R option.
-                    Use '-P SM' if you use your own annotation that have been propery formated (.gtf/.gff)", metavar="character"),
+                    Use '-P SR' if you use a Stringtie transcriptome obtained with short read, or long read with the -L mode.
+                    Use '-P SR' if you use a Stringtie transcriptome obtained with long reads and the -R option.
+                    Use '-P SA' if you use a Stringtie transcriptome obtained with the'Merge' mode, 
+					or a custom transcriptome with Stringtie format exon numbering (.gtf/.gff).
+					Use '-P SC' if you use a custom transcriptome with strand-based exon numbering.", metavar="character"),
     make_option(c("-P", "--Pmode"), type="character", default="0", 
-              help="(optional) Add this option if: 
-                    -the transcriptome annotation have been built with long-reads sequencing by Stringtie2 using -R mode (use -P SR).
-                    -you are using a custom transcriptome annotation that has been properly formated (use -P SM)',  [default= %default] (0)", metavar="character"),              
+              help="Use '-P SR' if you use a Stringtie transcriptome obtained with short read, or long read with the -L mode.
+                    Use '-P SR' if you use a Stringtie transcriptome obtained with long reads and the -R option.
+                    Use '-P SA' if you use a Stringtie transcriptome obtained with the'Merge' mode, 
+					or a custom transcriptome with Stringtie format exon numbering (.gtf/.gff).
+					Use '-P SC' if you use a custom transcriptome with strand-based exon numbering.", metavar="character"),              
     make_option(c("-L", "--transposonsgenes"), type="character", default=NULL, 
               help="(optional) Pathway to the annotation of gene-like transposable elements (.gtf/.gff)", metavar="character"),
     make_option(c("-F", "--Tfalsepositive"), type="character", default=0.8, 
               help="Percentage of a TEs that overlap a gene annotation to be considered as false positive, [default= %default] (80%)", metavar="number"), 
     make_option(c("-I", "--Tintragenic"), type="character", default=0.8, 
-              help="Minimum proportion (%) of TE lenght that overlap a gene to be considered as intragenic [default= %default] (80%)", metavar="number"),
+              help="Minimum proportion (%) of TE length that overlap a gene to be considered as intragenic [default= %default] (80%)", metavar="number"),
     make_option(c("-i", "--Tintron"), type="character", default=0.01,
               help="Minimum proportion (%) of an exons that a TE have to overlap to be considered as partial exonic, otherwise it is considered as intronic, [default= %default] (0.01%)", metavar="number"),
     make_option(c("-e", "--Texon1"), type="character", default=0.8, 
@@ -39,13 +43,13 @@ option_list = list(
     make_option(c("-n", "--Tneighbor"), type="character", default=2000, 
               help="Maximum distance between a gene and a neighbor TE, [default= %default] (2000 bp)", metavar="number"),
     make_option(c("-X", "--MinLexons"), type="character", default=10, 
-              help="Minimum length of exons',  [default= %default] (10 bp)", metavar="number"),
+              help="Minimum length of exons,  [default= %default] (10 bp)", metavar="number"),
     make_option(c("-m", "--MinLtransposons"), type="character", default=0, 
-              help="Minimum length of transposons ',  [default= %default] (0 bp)", metavar="number"),
+              help="Minimum length of transposons,  [default= %default] (0 bp)", metavar="number"),
     make_option(c("-M", "--MaxLtransposons"), type="character", default=50000, 
-              help="Maximun length of transposons',  [default= %default] (50000 bp)", metavar="number"),
+              help="Maximun length of transposons' [default= %default] (50000 bp)", metavar="number"),
     make_option(c("-W", "--Where"), type="character", default=NULL, 
-              help="If -W Y Check where is located the TE, in CDS or or 5'UTR or 3'UTR if described in the gene model annotation",  metavar="character")
+              help="If '-W Y' ParasiTE check if the exonic TE region overlap gene CDS, 5'UTR or 3'UTR regarding features available in the gene model annotation",  metavar="character")
 ); 
  
  
@@ -73,7 +77,6 @@ if (is.null(opt$Pmode)){
 }
 
 #1 Build the working directories
-
 initial.options <- commandArgs(trailingOnly = FALSE)
 file.arg.name <- "--file="
 script.name <- sub(file.arg.name, "", initial.options[grep(file.arg.name, initial.options)])
@@ -92,7 +95,7 @@ system(paste("mkdir ../ParasiTE_output/Results"))
 system(paste("mkdir ../ParasiTE_output/Results/STEP1_Remove_gene-like_TEs_transcripts"))
 system(paste("mkdir ../ParasiTE_output/Results/STEP2_intergenic_intragenic_TEs/"))
 system(paste("mkdir ../ParasiTE_output/Results/STEP3_exonic_intronic_TEs/"))
-system(paste("mkdir ../ParasiTE_output/Results/STEP4_TE-G_candidates/"))
+system(paste("mkdir ../ParasiTE_output/Results/STEP4_TE-Gt_candidates/"))
 system(paste("mkdir ../ParasiTE_output/Results/STEP5_altTE-Gi_candidates/"))
 #(in progress)
 #system(paste("mkdir ../ParasiTE_output/Results/Plots"))
@@ -103,7 +106,7 @@ print(logo,row.names=F,col.names=F)
 #2/ Change the format the .gff/.gtf files in .bed to be properly used by bedtools
 
 #2.1/ Gene model annotation
-#Select the "gene annotation" from the gene model file, then converts and sorts in bed file
+#Select the "gene" feature from the gene model file, then converts and sorts in bed file
 system(paste("awk -F'\t' '$3~/gene/'", opt$genes, "> ../ParasiTE_output/gene_annotation.gff3"))
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/gene_annotation.gff3 > ../ParasiTE_output/pre-gene_annotation.bed && 
 bedtools sort -i ../ParasiTE_output/pre-gene_annotation.bed > ../ParasiTE_output/gene_annotation.bed &&
@@ -118,7 +121,7 @@ system(paste("awk -F'\t' '{$10 = ($5-$4)+1} 1' OFS='\t' ../ParasiTE_output/origi
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/TE_annotation.gff3 > ../ParasiTE_output/pre-transposons_annotation.bed && 
 bedtools sort -i ../ParasiTE_output/pre-transposons_annotation.bed > ../ParasiTE_output/transposons_annotation.bed"))
 
-#2.3/ De novo transcripts annotation
+#2.3/ Transcriptome dataset
 #Selects the transcript annotation, converts and sorts in bed file
 system(paste("cp ",opt$transcripts," ../ParasiTE_output/submited_transcripts_annotation.gff3"))
 system(paste("awk -F'\t' '$3~/transcript/'", opt$transcripts, "> ../ParasiTE_output/transcript_annotation.gff3"))
@@ -130,7 +133,7 @@ system(paste("awk -F'\t' '$3~/exon/'", opt$transcripts, "> ../ParasiTE_output/ex
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/exon_transcript_annotation.gff3 > ../ParasiTE_output/pre-exon_transcript_annotation.bed &&
 bedtools sort -i ../ParasiTE_output/pre-exon_transcript_annotation.bed > ../ParasiTE_output/exon_transcript_annotation.bed")) 
 
-#2.4/ (optional) Loads of the CDS, 5' UTR, 3' UTR annotations
+#2.4/ (optional) Loads of the CDS, 5'-UTR and 3'-UTR annotations
 #Selects the CDS annotation, converts and sorts in bed file
 system(paste("awk -F'\t' '$3~/CDS/'", opt$genes, "> ../ParasiTE_output/cds_annotation.gff3"))
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/cds_annotation.gff3 > ../ParasiTE_output/pre-cds_annotation.bed && 
@@ -144,14 +147,14 @@ system(paste("awk -F'\t' '$3~/three_prime_utr/'", opt$genes, "> ../ParasiTE_outp
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/three_annotation.gff3 > ../ParasiTE_output/pre-three_annotation.bed && 
 bedtools sort -i ../ParasiTE_output/pre-three_annotation.bed > ../ParasiTE_output/three_annotation.bed"))
 
-#3/ STEP1: Reduce false positives caused by transposons gene-like 
-#3.1/ Remove gene-like transposable elements isoforms
-#Identify genes that overlap 80% in lenght with TE annotation (considered as gene-like TEs)
+#3/ STEP1: Reduce gene-like transposable elements
+#3.1/ Remove gene-like transposable elements from gene model annotation and transcriptome dataset
+#Identify genes that have min 80% of their length overlapped a TEs (These genes are considered as gene-like TEs)
 system(paste("bedtools intersect -nonamecheck -f ", opt$Tfalsepositive," -nonamecheck -wa -a ../ParasiTE_output/gene_annotation.bed -b ../ParasiTE_output/transposons_annotation.bed  > ../ParasiTE_output/gene_FP.bed &&
 cat ../ParasiTE_output/gene_FP.bed ../ParasiTE_output/gene_annotation.bed > ../ParasiTE_output/All_genes_and_fp_genes.bed &&
 sort ../ParasiTE_output/All_genes_and_fp_genes.bed | uniq -u > ../ParasiTE_output/genes_wo_fp.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/genes_wo_fp.uniq.bed > ../ParasiTE_output/genes_wo_fp.uniq.sorted.bed")) 
-#Remove transcripts that overlap 80% in length with TE like genes
+#Remove transcripts that overlap 80% in length a gene-like TEs found in gene model annotation
 system(paste("bedtools intersect -nonamecheck -f ", opt$Tfalsepositive," -wo -a ../ParasiTE_output/gene_FP.bed -b ../ParasiTE_output/transcript_annotation.bed  > ../ParasiTE_output/gene_transcript_FP.bed "))
 filter1 <- "awk 'BEGIN{FS=OFS=\"\t\"} {print $11,$12,$13,$14,$15,$16,$17,$18,$19,$20}' ../ParasiTE_output/gene_transcript_FP.bed > ../ParasiTE_output/transcript_FP1.bed"
 system(paste(filter1))
@@ -170,14 +173,14 @@ system(paste("cp ",opt$transposonsgenes, "../ParasiTE_output/TE-genes-like_annot
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/TE-genes-like_annotation.gff3 > ../ParasiTE_output/pre-TE-genes-like_annotation.bed && 
 bedtools sort -i ../ParasiTE_output/pre-TE-genes-like_annotation.bed > ../ParasiTE_output/TE-genes-like_annotation.bed"))
 
-#Identify genes that overlap at least 80% of a gene-like TEs annotated and remove it
+#Identify transcripts that have min 80% of their length overlapped by a gene-like TEs, and remove the transcripts
 system(paste("bedtools intersect -nonamecheck -F ", opt$Tfalsepositive," -wo -a ../ParasiTE_output/TE-genes-like_annotation.bed -b ../ParasiTE_output/transcript_annotation.bed  > ../ParasiTE_output/gene_transcript_FP.bed "))
 filter2 <- "awk 'BEGIN{FS=OFS=\"\t\"} {print $11,$12,$13,$14,$15,$16,$17,$18,$19,$20}' ../ParasiTE_output/gene_transcript_FP.bed > ../ParasiTE_output/transcript_FP2.bed"
 system(paste(filter2))
 system(paste("cp ../ParasiTE_output/transcript_FP2.bed ../ParasiTE_output/Results/STEP1_Remove_gene-like_TEs_transcripts/Removed_transcripts_using_gene-like_TE_annotation.bed"))
 }
 
-#Remove redundancy 
+#Remove redundancy among the list of transcripts considered to belong to gene-like TEs (false positives TE-Gi)
 system(paste("cat ../ParasiTE_output/transcript_FP1.bed ../ParasiTE_output/transcript_FP2.bed > ../ParasiTE_output/transcript_FP.bed &&
 sort ../ParasiTE_output/transcript_FP.bed | uniq > ../ParasiTE_output/transcript_FP.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/transcript_FP.uniq.bed > ../ParasiTE_output/transcript_FP.uniq.sorted.bed"))
@@ -185,16 +188,16 @@ bedtools sort -i ../ParasiTE_output/transcript_FP.uniq.bed > ../ParasiTE_output/
 #R loads the transcript annotation
 transcript_annotation <- read.table("../ParasiTE_output/transcript_annotation.bed", header = FALSE, sep = '\t', check.names=FALSE)
 
-#Check if transcripts that are gene-like TEs are existing 
+#Check if a file containing transcripts that are gene-like TEs exist
 if (file.exists("../ParasiTE_output/transcript_FP.uniq.sorted.bed")&(file.size("../ParasiTE_output/transcript_FP.uniq.sorted.bed")>0)) {
-#R loads the False Positives transcripts that are considered as gene-like TEs
+#R loads the information of transcripts that are considered as gene-like TEs
 transcript_FP <-  read.table("../ParasiTE_output/transcript_FP.uniq.sorted.bed", header = FALSE, sep = '\t', check.names=FALSE)
 colnames(transcript_FP)<-c("chromosome","start", "end", "poin", "other", "strand","tool", "type", "point","id")
 transcript_FP <- cSplit(transcript_FP,"id",";")
 transcript_FP <- setDT(transcript_FP)[, paste0("id_2", 1:2) := tstrsplit(transcript_FP$id_2, " ")]
 FP_list <- transcript_FP$id_22
 FP_list <- as.character(gsub(' ','',FP_list))
-# Create a list of transcript names that looks like gene-like TEs
+# R create a list of transcript names that are considered as gene-like TEs
 write.table(FP_list,file="../ParasiTE_output/FP_list.txt",sep = "\t",row.names=F,col.names=F)
 #Retrieve the trasncript number (example here X in "STRG.1.X") and remove the corresponding transcript and exons 
 system(paste("grep -vFwf ../ParasiTE_output/FP_list.txt ../ParasiTE_output/transcript_annotation.bed > ../ParasiTE_output/transcript_annotation_wo_FP.bed"))
@@ -206,11 +209,11 @@ system(paste("cp ../ParasiTE_output/exon_transcript_annotation.bed ../ParasiTE_o
  }
 
 system(paste("cp ../ParasiTE_output/exon_transcript_annotation_wo_FP.bed ../ParasiTE_output/Results/STEP1_Remove_gene-like_TEs_transcripts/Cleaned_transcripts_annotation.bed"))
-cat("[STEP1] parasiTE has removed predicted genes-like TE transcripts \n")
+cat("[STEP1] ParasiTE has removed predicted genes-like TE transcripts \n")
 
 #4/ STEP2: Classification of TEs regarding to their location
-#4.1/ Discrimination of Intergenic TEs vs Intragenic TEs_exonic.bed
-#Bedtools detects TEs that overlap at least 80% the lenght of a gene annotation, remove redundancy and sorts
+#4.1/ Discrimination of Intergenic TEs vs Intragenic TEs
+#Detects TEs that have minimum 80% of their length overlapped by a gene model annotation, remove redundancy and sorts
 system(paste("bedtools intersect -f ", opt$Tintragenic," -nonamecheck -wa -a ../ParasiTE_output/transposons_annotation.bed -b ../ParasiTE_output/genes_wo_fp.uniq.sorted.bed > ../ParasiTE_output/intragenicTEs.bed &&
 sort ../ParasiTE_output/intragenicTEs.bed | uniq > ../ParasiTE_output/intragenicTEs.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/intragenicTEs.uniq.bed > ../ParasiTE_output/intragenicTEs.uniq.sorted.bed"))
@@ -248,9 +251,9 @@ system(paste(fix))
 system(paste("cat ../ParasiTE_output/neighbor_intergenic_TEs_up_round1.clean.bed ../ParasiTE_output/neighbor_intergenic_TEs_down_round1.clean.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.bed &&
 sort ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.bed | uniq > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.uniq.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.uniq.sorted.bed &&
-awk -F'\t' '( ($21 >= -",opt$Tneighbor, ") && ( $21 <= ",opt$Tneighbor," ) )' ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.uniq.sorted.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.uniq.sorted.lenght.bed"))
+awk -F'\t' '( ($21 >= -",opt$Tneighbor, ") && ( $21 <= ",opt$Tneighbor," ) )' ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.uniq.sorted.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.uniq.sorted.length.bed"))
 
-dd <- "awk 'BEGIN{FS=OFS=\"\t\"} {print $11,$12,$13,$14,$15,$16,$17,$18,$19,$20}' ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.uniq.sorted.lenght.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.final.bed"
+dd <- "awk 'BEGIN{FS=OFS=\"\t\"} {print $11,$12,$13,$14,$15,$16,$17,$18,$19,$20}' ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.uniq.sorted.length.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.final.bed"
 system(paste(dd))
 system(paste("sort ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.final.bed | uniq > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.final.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.final.uniq.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.final.uniq.sorted.bed"))
@@ -265,19 +268,22 @@ system(paste("bedtools closest -nonamecheck -D ref -id -io -a ../ParasiTE_output
 #Bedtool add line with "-1 -1" when no results were found. Thus I need to remove those lines.
 fix <- "awk -F'\t' '$11 !=\".\"' ../ParasiTE_output/neighbor_intergenic_TEs_up_round2.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_round2.clean.bed " 
 system(paste(fix))
+
 #downstream
 system(paste("bedtools closest -nonamecheck -D ref -iu -io -a ../ParasiTE_output/genes_wo_fp.uniq.sorted.bed -b ../ParasiTE_output/IntergenicTEs.labeled.wo_round1.sorted.bed > ../ParasiTE_output/neighbor_intergenic_TEs_down_round2.bed"))
+
 #Bedtool add line with "-1 -1" when no results were found. Thus I need to remove those lines.
 fix <- "awk -F'\t' '$11 !=\".\"' ../ParasiTE_output/neighbor_intergenic_TEs_down_round2.bed > ../ParasiTE_output/neighbor_intergenic_TEs_down_round2.clean.bed " 
 system(paste(fix))
 system(paste("cat ../ParasiTE_output/neighbor_intergenic_TEs_up_round2.clean.bed ../ParasiTE_output/neighbor_intergenic_TEs_down_round2.clean.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.bed &&
 sort ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.bed | uniq > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.uniq.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.uniq.sorted.bed &&
-awk -F'\t' '( ($21 >= -",opt$Tneighbor, ") && ( $21 <= ",opt$Tneighbor," ) )' ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.uniq.sorted.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.uniq.sorted.lenght.bed"))
-dd <- "awk 'BEGIN{FS=OFS=\"\t\"} {print $11,$12,$13,$14,$15,$16,$17,$18,$19,$20}' ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.uniq.sorted.lenght.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.final.bed"
+awk -F'\t' '( ($21 >= -",opt$Tneighbor, ") && ( $21 <= ",opt$Tneighbor," ) )' ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.uniq.sorted.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.uniq.sorted.length.bed"))
+dd <- "awk 'BEGIN{FS=OFS=\"\t\"} {print $11,$12,$13,$14,$15,$16,$17,$18,$19,$20}' ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.uniq.sorted.length.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.final.bed"
 system(paste(dd))
 system(paste("sort ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.final.bed | uniq > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.final.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.final.uniq.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.final.uniq.sorted.bed"))
+
 #Remove round2 TEs from intergenic all annotation
 system(paste("cat ../ParasiTE_output/IntergenicTEs.labeled.wo_round1.sorted.bed ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round2.final.uniq.sorted.bed > ../ParasiTE_output/IntergenicTEs.labeled.wo_round1.with_round2.bed && 
 sort ../ParasiTE_output/IntergenicTEs.labeled.wo_round1.with_round2.bed | uniq -u > ../ParasiTE_output/IntergenicTEs.labeled.wo_round1.wo_round2.bed &&
@@ -297,8 +303,8 @@ system(paste(fix))
 system(paste("cat ../ParasiTE_output/neighbor_intergenic_TEs_up_round3.clean.bed ../ParasiTE_output/neighbor_intergenic_TEs_down_round3.clean.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.bed &&
 sort ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.bed | uniq > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.uniq.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.uniq.sorted.bed &&
-awk -F'\t' '( ($21 >= -",opt$Tneighbor, ") && ( $21 <= ",opt$Tneighbor," ) )' ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.uniq.sorted.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.uniq.sorted.lenght.bed"))
-dd <- "awk 'BEGIN{FS=OFS=\"\t\"} {print $11,$12,$13,$14,$15,$16,$17,$18,$19,$20}' ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.uniq.sorted.lenght.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.final.bed"
+awk -F'\t' '( ($21 >= -",opt$Tneighbor, ") && ( $21 <= ",opt$Tneighbor," ) )' ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.uniq.sorted.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.uniq.sorted.length.bed"))
+dd <- "awk 'BEGIN{FS=OFS=\"\t\"} {print $11,$12,$13,$14,$15,$16,$17,$18,$19,$20}' ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.uniq.sorted.length.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.final.bed"
 system(paste(dd))
 system(paste("sort ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.final.bed | uniq > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.final.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.final.uniq.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round3.final.uniq.sorted.bed"))
@@ -308,7 +314,7 @@ system(paste("cat ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round1.fina
 sort ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round_1_round2_round3.bed | uniq > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round_1_round2_round3.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round_1_round2_round3.uniq.bed > ../ParasiTE_output/neighbor_intergenic_TEs_up_down_round_1_round2_round3.uniq.sorted.bed"))
 
-cat("[STEP2] parasiTE has discriminated intragenic and intergenic TEs \n")
+cat("[STEP2] ParasiTE has detected intragenic and intergenic TEs \n")
 
 #5/ STEP3: Detection of exonic TE candidates
 
@@ -321,19 +327,19 @@ system(paste("awk -F'\t' '{$11 = ($3-$2)} 1' OFS='\t' ../ParasiTE_output/exon_tr
 awk -F'\t' '( $11 >=",opt$MinLexons, ") {print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10}' OFS='\t' ../ParasiTE_output/pre-exon_transcript_annotation_wo_FP.woshort.bed  > ../ParasiTE_output/exon_transcript_annotation_wo_FP.woshort.bed "))
 
 #5.2/ Identification Method1 - Unfragmented exonic TEs
-#The Method 1 is searching TEs that are overlapped by at least 80% in length by an exon, one TEs can be in several transcript isoforms, thus the same TE can be found several time
+#The Method 1 is searching TEs that have minimum 80% of their length overlapped by an exon, one TEs can be in several transcript isoforms, thus the same TE can be found several time
 system(paste("bedtools intersect -f ", opt$Texon1, " -nonamecheck -wo -a ../ParasiTE_output/Intragenic_TEs_Neighbor_intergenic.bed -b ../ParasiTE_output/exon_transcript_annotation_wo_FP.woshort.bed > ../ParasiTE_output/TE_transcripts_exonic_events.bed &&
 sort ../ParasiTE_output/TE_transcripts_exonic_events.bed | uniq > ../ParasiTE_output/TE_transcripts_exonic_events.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/TE_transcripts_exonic_events.uniq.bed > ../ParasiTE_output/TE_transcripts_exonic_events.sorted.bed"))
 
-#5.3/ Identification Method2 - Fragemented exonic TEs
-#The method 2 search TEs that overlap exon by more than 80% the total length of the exon, those ones are also potential intragenic exonic TEs
+#5.3/ Identification Method2 - Fragmented exonic TEs
+#The method 2 search exons that have minimum 80% of their length overlapped by a TE, those ones are also potential intragenic exonic TEs
 system(paste("bedtools intersect -F ", opt$Texon2, " -nonamecheck -wo -a ../ParasiTE_output/Intragenic_TEs_Neighbor_intergenic.bed  -b ../ParasiTE_output/exon_transcript_annotation_wo_FP.woshort.bed > ../ParasiTE_output/exonic_ambigous_TEs.bed && sort ../ParasiTE_output/exonic_ambigous_TEs.bed | uniq > ../ParasiTE_output/exonic_ambigous_TEs.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/exonic_ambigous_TEs.uniq.bed > ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events.uniq.sorted.bed"))
 
-#5.4/ Identification Method3 - Partially exonic TEs
+#5.4/ Identification Method3 - Partial exonic TEs
 #Create a new annotation without the exonic TEs detected with method 1 and method 2
-#Identify all exonic TEs that are covered by min 1% of the TE length
+#Identify all exonic TEs that are covered by minimum 1% of a TE
 system(paste("bedtools intersect -F ", opt$Tintron," -nonamecheck -wo -a ../ParasiTE_output/Intragenic_TEs_Neighbor_intergenic.bed  -b ../ParasiTE_output/exon_transcript_annotation_wo_FP.woshort.bed > ../ParasiTE_output/partialy_exonic_TEs.bed && 
 sort ../ParasiTE_output/partialy_exonic_TEs.bed | uniq > ../ParasiTE_output/partialy_exonic_TEs.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/partialy_exonic_TEs.uniq.bed > ../ParasiTE_output/partialy_exonic_TEs.uniq.sorted.bed"))
@@ -363,7 +369,7 @@ system(paste("sort ../ParasiTE_output/CAT_Intragenic_and_exonic_TEs.bed | uniq -
 bedtools sort -i ../ParasiTE_output/Intragenic_wo_exonic_TEs.bed > ../ParasiTE_output/Intragenic_wo_partial_and_full_exonic_TEs.sorted.bed"))
 
 #6.3/ Annotation file: Intronic TEs
-#The TEs that overlap more 10% the length of an exon are excuded from the total intragenic TE annotation, thus the TEs left are potential intronic TEs  
+#The TEs that overlap more 1% the length of an exon are excuded from the total intragenic TE annotation, thus the TEs left are considered as intronic TEs  
 system(paste("sort ../ParasiTE_output/Intragenic_wo_partial_and_full_exonic_TEs.sorted.bed | uniq -u > ../ParasiTE_output/pre-TE_intronic.uniq.bed &&
 bedtools sort -i ../ParasiTE_output/pre-TE_intronic.uniq.bed > ../ParasiTE_output/pre-TE_intronic.uniq.sorted.bed"))
 
@@ -384,8 +390,8 @@ sort ../ParasiTE_output/TE_intronic_events.bed | uniq > ../ParasiTE_output/TE_in
 bedtools sort -i ../ParasiTE_output/TE_intronic_events.uniq.bed > ../ParasiTE_output/TE_intronic_events.uniq.sorted.bed && 
 cp ../ParasiTE_output/TE_intronic_events.uniq.sorted.bed ../ParasiTE_output/Intragenic_intronic_TEs_genes.bed"))
 
-#Remove redundance for TE-transcript detection, one TE-transcript detcetion can be detectected by method1 or method2 or method3, we set the order as method1 > method2 > method3  
-#remove the last column of each, because it is slighly differents according to the method
+#Remove redundance for TE-transcript detection, one TE-transcript detection can be detectected by method1 or method2 or method3, we set the order as method1 > method2 > method3  
+#remove the last column of each, because it is slighly different according to the method
 qw <- "awk 'BEGIN{FS=OFS=\"\t\"} {print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21}' ../ParasiTE_output/TE_transcripts_exonic_events.sorted.bed > ../ParasiTE_output/TE_transcripts_exonic_events2.sorted.bed"
 system(paste(qw))
 qe <- "awk 'BEGIN{FS=OFS=\"\t\"} {print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21}' ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events.uniq.sorted.bed > ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events2.uniq.sorted.bed"
@@ -398,13 +404,13 @@ system(paste("sort ../ParasiTE_output/TE_transcripts_exonic_events2.sorted.bed >
 sort ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events2.uniq.sorted.bed > ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events.uniq.sort.bed &&
 sort ../ParasiTE_output/partialy_exonic_TEs2.uniq.sorted.bed > ../ParasiTE_output/partialy_exonic_TEs.uniq.sort.bed"))
 
-#Remove method 2 candidates that are in methode 1
+#Remove method 1 candidates that are in methode 2 list
 system(paste("comm -12 ../ParasiTE_output/TE_transcripts_exonic_events.sort.bed ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events.uniq.sort.bed > ../ParasiTE_output/comm1_2.bed &&
 cat ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events.uniq.sort.bed ../ParasiTE_output/comm1_2.bed > ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events_comm1_2.bed &&
 sort ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events_comm1_2.bed | uniq -u > ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events_wo_comm1.bed &&
 bedtools sort -i ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events_wo_comm1.bed  > ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events_wo_comm1.sorted.bed "))
 
-#Remove method 1 and 2 candidates that are in methode 3
+#Remove method 1 and 2 candidates that are in methode 3 list
 system(paste("cat ../ParasiTE_output/TE_transcripts_exonic_events.sort.bed ../ParasiTE_output/TE_transcripts_exonic_method2_TEs_events.uniq.sort.bed > ../ParasiTE_output/cat_TE_transcripts_exonic_method1_2_TEs_events.bed &&
 sort ../ParasiTE_output/cat_TE_transcripts_exonic_method1_2_TEs_events.bed | uniq > ../ParasiTE_output/cat_TE_transcripts_exonic_method1_2_TEs_events.uniq.bed &&
 comm -12 ../ParasiTE_output/cat_TE_transcripts_exonic_method1_2_TEs_events.uniq.bed ../ParasiTE_output/partialy_exonic_TEs.uniq.sort.bed > ../ParasiTE_output/comm1_2_3.bed &&
@@ -434,53 +440,45 @@ system(paste("mv  ../ParasiTE_output/Intragenic_intronic_TEs_genes.labeled.bed .
 
 system(paste("cat ../ParasiTE_output/Results/STEP3_exonic_intronic_TEs/Full_exonic_TEs_method1.bed ../ParasiTE_output/Results/STEP3_exonic_intronic_TEs/Fragmented_exonic_TEs_method2.bed ../ParasiTE_output/Results/STEP3_exonic_intronic_TEs/Partial_exonic_TEs_method3.bed  > ../ParasiTE_output/Candidate_TEs.bed"))
 
-cat("[STEP3] parasiTE has discriminated exonic and intronic TEs \n")
+cat("[STEP3] ParasiTE has detected exonic and intronic TEs \n")
 
-#6.5/ Extraction of slicing_site
+#6.5/ Extraction of slicing_sites using Hisat2 script
 system(paste("../Dependencies/Splicing_sites/extract_splice_sites.py ", opt$transcripts," > ../ParasiTE_output/splicing_sites.gff"))
 
 #7/ Loading of Stringtie2 input data
-# 7.1/ Stringtie transcript annotation is loaded
+#7.1/ Stringtie transcript annotation is loaded
 
 All_transcript <-  read.table("../ParasiTE_output/transcript_annotation_wo_FP.bed", header = FALSE, sep = '\t', check.names=FALSE)
 colnames(All_transcript)<-c("chromosome","start", "end", "poin", "other", "strand","tool", "type", "point","id")
 
-#7.2/ TE-related transcripts candidates are loaded
+#7.2/ TE-G transcripts candidates are loaded
 transposons <- read.table("../ParasiTE_output/Candidate_TEs.bed", header = FALSE, sep = '\t', check.names=FALSE)
-colnames(transposons)<-c("techromosome","testart", "teend", "tename", "other", "strand","localisation","method", "point", "idte","exon_chromosome","exon_start", "exon_end", "exonpoint", "exonother", "exonstrand","exontool","exonmatch", "exonpoint2", "idexon", "TE_vs_exonlenght")
-#check if the cov is indicated for exon, beacause Stringtie do not give the coverage if we use the option -R in Stringtie. Therefore this cause problem for Parasite.
-#Here, the script check if the coverage is indicated, if not it add a false one 0.000000, to make the script work.
+colnames(transposons)<-c("techromosome","testart", "teend", "tename", "other", "strand","localisation","method", "point", "idte","exon_chromosome","exon_start", "exon_end", "exonpoint", "exonother", "exonstrand","exontool","exonmatch", "exonpoint2", "idexon", "TE_vs_exonlength")
 
-#FOR ANNOTATION OF ARAPORT11 
+#For custom annotation using strand-based exon numbering
 if (opt$Pmode=="SC"){
 transposons$idexon <- ifelse(grepl("cov",transposons$idexon),transposons$idexon,paste0(transposons$idexon," cov 0.000000;"))
 }
-#FOR ANNOTATION OF STRINGTIE R 
+#For Stringtie annotation with mode R
 if (opt$Pmode=="SR"){
 transposons$idexon <- ifelse(grepl("cov",transposons$idexon),transposons$idexon,paste0(transposons$idexon,"cov0.000000;"))
 }
 
-#FOR ANNOTATION OF Stringtie Merged files
+#
 if (opt$Pmode=="SM"){
 transposons$idexon <- ifelse(grepl("cov",transposons$idexon),transposons$idexon,paste0(transposons$idexon,"cov0.000000;"))
 }
 
-#FOR ANNOTATION OF atRDT3 
+#For Stringtie annotation with mode Merge and custom annotation following stringtie format
 if (opt$Pmode=="SA"){
 transposons$idexon <- ifelse(grepl("cov",transposons$idexon),transposons$idexon,paste0(transposons$idexon," cov 0.000000;"))
 }
 
-#7.3/ Stringtie exon annotation is loaded
-
+#7.3/ Exon annotation is loaded
 All_exons <- read.table("../ParasiTE_output/exon_transcript_annotation_wo_FP.bed", header = FALSE, sep = '\t', check.names=FALSE)
 colnames(All_exons)<-c("chromosome","start", "end", "poin", "other", "strand","tool", "type", "point","id")
-#check if the cov is indicated for exon, beacause Stringtie do not give the coverage if we use the option -R in Stringtie. Therefore this cause problem for Parasite.
-#Here, the script check if the coverage is indicated, if not it add a false one 0.000000, to make the script work.
 
-#FOR ANNOTATION OF STRINGTIE R 
-#RAS
-
-#FOR ANNOTATION OF Stringtie Merged files
+#FOR ANNOTATION OF stringtie Merged files
 if (opt$Pmode=="SM"){
 All_transcript$id <- ifelse(grepl("cov",All_transcript$id),All_transcript$id,paste0(All_transcript$id,"cov 1.000000; FPKM 1.000000; TPM 1.000000;"))
 All_exons$id <- ifelse(grepl("cov",All_exons$id),All_exons$id,paste0(All_exons$id," cov 0.000000;"))
@@ -491,8 +489,8 @@ All_transcript$id <- ifelse(grepl("cov",All_transcript$id),All_transcript$id,pas
 All_exons$id <- ifelse(grepl("cov",All_exons$id),All_exons$id,paste0(All_exons$id," cov 0.000000;"))
 }
 
-# 8/ Important informations are extracted
-#8.1/ Extraction of important information from the Stringtie transcript annotation
+#8/ Informations are extracted
+#8.1/ Extraction of informations from the Stringtie transcript annotation
 All_transcript <- setDT(All_transcript)[, paste0("id", 1:2) := tstrsplit(All_transcript$id, "; cov")]
 All_transcript <- cSplit(All_transcript,"id2",";")
 All_transcript <- setDT(All_transcript)[, paste0("COV", 1:2) := tstrsplit(All_transcript$id2_1, " ")]
@@ -506,11 +504,11 @@ All_transcript$COV2 <-  as.character(All_transcript$COV2)
 All_transcript$FPKM3 <-  as.character(All_transcript$FPKM3)
 All_transcript$TPM3 <-  as.character(All_transcript$TPM3)
 
-#8.2/ Extraction of important information from the Stringtie exon annotation
+#8.2/ Extraction of informations from the Stringtie exon annotation
 All_exons <- cSplit(All_exons,"id",";")
 All_exons <- setDT(All_exons)[, paste0("id_iso", 1:2) := tstrsplit(All_exons$id_2, " ")]
 
-#8.3/ Extraction of important information from the TE annotation file
+#8.3/ Extraction of informations from the TE annotation file
 transposons <- setDT(transposons)[, paste0("cov", 1:2) := tstrsplit(transposons$idexon, "; cov")]
 transposons <- setDT(transposons)[, paste0("ref", 1:2) := tstrsplit(transposons$cov1, "reference_id")]
 transposons <- cSplit(transposons,"idexon",";")
@@ -528,7 +526,7 @@ transposons$idexon1 <-  as.character(transposons$idexon1)
 transposons$exon_start <-  as.character(transposons$exon_start)
 transposons$exon_end <-  as.character(transposons$exon_end)
 transposons$exon_chromosome  <-  as.character(transposons$exon_chromosome)
-transposons$TE_vs_exonlenght <-  as.character(transposons$TE_vs_exonlenght)
+transposons$TE_vs_exonlength <-  as.character(transposons$TE_vs_exonlength)
 
 
 #8.4/Filters (off) 
@@ -563,33 +561,33 @@ transcripts_TEs_list <- list(TE_transcript_count$TEtranscript)
 freqTranscripts_TEs_list  <- as.data.frame(table(comb = do.call(paste, transcripts_TEs_list )))
 colnames(freqTranscripts_TEs_list)<-c("TE_gene", "Number_transcript_with_TE")
 
-#join interesting data
+#join data
 transposons$TEtranscript <- paste(transposons$tename, transposons$id_gene2)
 
-#build of TE exon change according to input transcriptome,because there is a discrepency regarding number of column 
-TEexon <- cbind(transposons$TEtranscript, transposons$id_iso2, transposons$id_gene2, transposons$ref2, transposons$cov_exon1, transposons$exon_chromosome, transposons$exon_start, transposons$exon_end, transposons$TE_vs_exonlenght , transposons$tename, transposons$techromosome, transposons$testart, transposons$teend, transposons$localisation, transposons$method, transposons$exonic, transposons$exonstrand, transposons$idexon_numb2 )
+#build of TE exon information according to input transcriptome, because there is a discrepency regarding number of column 
+TEexon <- cbind(transposons$TEtranscript, transposons$id_iso2, transposons$id_gene2, transposons$ref2, transposons$cov_exon1, transposons$exon_chromosome, transposons$exon_start, transposons$exon_end, transposons$TE_vs_exonlength , transposons$tename, transposons$techromosome, transposons$testart, transposons$teend, transposons$localisation, transposons$method, transposons$exonic, transposons$exonstrand, transposons$idexon_numb2 )
 
-colnames(TEexon)<-c("TE_gene","comb", "gene_name", "gene_ref", "exon_coverage", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlenght" , "te_name", "te_chromosome", "te_start", "te_end", "te_localisation", "method","exon_strand", "exon_number")
+colnames(TEexon)<-c("TE_gene","comb", "gene_name", "gene_ref", "exon_coverage", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlength" , "te_name", "te_chromosome", "te_start", "te_end", "te_localisation", "method","exon_strand", "exon_number")
 TEexon <- as.data.frame(TEexon)
 
 options(warn=-1)
 join <- left_join(TEexon, freqTranscripts_TEs_list, by = c('TE_gene'))
 options(warn=0)
 
-join <- join[,c("comb", "TE_gene", "gene_name", "gene_ref", "exon_coverage", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlenght" , "te_name", "te_chromosome", "te_start", "te_end", "te_localisation", "method", "exon_strand", "exon_number", "Number_transcript_with_TE")]
+join <- join[,c("comb", "TE_gene", "gene_name", "gene_ref", "exon_coverage", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlength" , "te_name", "te_chromosome", "te_start", "te_end", "te_localisation", "method", "exon_strand", "exon_number", "Number_transcript_with_TE")]
 
 options(warn=-1)
 join <- left_join(join, freq_All_exons, by = c('comb'))
 join <- left_join(join, isoform_cov, by = c('comb'))
 options(warn=0)
 
-colnames(join)<-c("Transcript_id", "TE_gene", "Gene_id", "Gene_ref_id", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlenght", "TE_id", "TE_chromosome", "TE_start", "TE_end", "TE_localisation", "method", "exon_strand", "exon_number", "Total_transcripts_with_this_TEs", "total_exon_number", "nepasprendre", "Coverage_transcript", "FPKM_transcript", "TPM_transcript", "Total_number_transcripts")
+colnames(join)<-c("Transcript_id", "TE_gene", "Gene_id", "Gene_ref_id", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlength", "TE_id", "TE_chromosome", "TE_start", "TE_end", "TE_localisation", "method", "exon_strand", "exon_number", "Total_transcripts_with_this_TEs", "total_exon_number", "nepasprendre", "Coverage_transcript", "FPKM_transcript", "TPM_transcript", "Total_number_transcripts")
 
 
-join <- join[,c("Transcript_id", "TE_gene", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlenght", "TE_id", "TE_chromosome", "TE_start", "TE_end" ,"TE_localisation", "method", "exon_strand", "exon_number", "total_exon_number")]
+join <- join[,c("Transcript_id", "TE_gene", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlength", "TE_id", "TE_chromosome", "TE_start", "TE_end" ,"TE_localisation", "method", "exon_strand", "exon_number", "total_exon_number")]
 
 
-#FOR ANNOTATION OF ARAPORT11 
+#For custom annotation using strand-based exon numbering
 if (opt$Pmode=="SC"){
 join$newcolumn <- 0
 join$newcolumn <- with(join, ifelse(exon_number == "1" & total_exon_number == "1", "single" , "0"))
@@ -606,6 +604,8 @@ join <-subset( join, select = -newcolumn4)
 join <-subset( join, select = -newcolumn5)
 }
 
+
+#For annotations using stringtie-based exon numbering
 if (opt$Pmode=="SR"|opt$Pmode=="SM"|opt$Pmode=="SA"|opt$Pmode=="SL"){
 join$newcolumn <- 0
 join$newcolumn <- with(join, ifelse(exon_number == "1" & total_exon_number == "1", "single" , "0"))
@@ -622,9 +622,9 @@ join <-subset( join, select = -newcolumn4)
 join <-subset( join, select = -newcolumn5)
 }
 
-colnames(join)<-c("Transcript_id", "TE_gene", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlenght", "TE_id", "TE_chromosome", "TE_start", "TE_end" ,"TE_localisation", "method", "exon_strand", "exon_number", "total_exon_number", "TE_position_isoform" )
+colnames(join)<-c("Transcript_id", "TE_gene", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlength", "TE_id", "TE_chromosome", "TE_start", "TE_end" ,"TE_localisation", "method", "exon_strand", "exon_number", "total_exon_number", "TE_position_isoform" )
 
-join_gene <- join[,c("Gene_id", "Transcript_id", "TE_gene", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlenght", "TE_id", "TE_chromosome", "TE_start", "TE_end" ,"TE_localisation", "method", "exon_strand", "exon_number", "total_exon_number", "TE_position_isoform" )]
+join_gene <- join[,c("Gene_id", "Transcript_id", "TE_gene", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlength", "TE_id", "TE_chromosome", "TE_start", "TE_end" ,"TE_localisation", "method", "exon_strand", "exon_number", "total_exon_number", "TE_position_isoform" )]
 
 stat <- do.call(data.frame, aggregate(Gene_id ~ TE_position_isoform, data=join, FUN=table))
 stat <- as.data.frame(t(stat))
@@ -641,24 +641,22 @@ options(warn=-1)
 join_gene <- left_join(join_gene, stat_gene, by = c('Gene_id'))
 options(warn=0)
 
-join_gene <- join_gene[,c("Transcript_id", "TE_gene", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlenght", "TE_id", "TE_chromosome", "TE_start", "TE_end" ,"TE_localisation", "method", "exon_strand", "exon_number", "total_exon_number", "TE_position_isoform" , "first", "middle" , "last" , "single" )]
+join_gene <- join_gene[,c("Transcript_id", "TE_gene", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlength", "TE_id", "TE_chromosome", "TE_start", "TE_end" ,"TE_localisation", "method", "exon_strand", "exon_number", "total_exon_number", "TE_position_isoform" , "first", "middle" , "last" , "single" )]
 
 #add a freq coulumn of TE isoform
 join_gene$freq <- 0
 join_gene$Freq_TE_isoform = ( join_gene$Total_transcripts_with_this_TEs/ join_gene$Total_number_transcripts )
 
-#add a coulumn of the difference proportion size between TE length and exon length
+#add a coulumn with the overlap length between TE and exon
 #join_gene$TE_vs_exon <- 0
-join_gene$TE_vs_exonlenght <-  as.numeric(levels(join_gene$TE_vs_exonlenght))[join_gene$TE_vs_exonlenght]
+join_gene$TE_vs_exonlength <-  as.numeric(levels(join_gene$TE_vs_exonlength))[join_gene$TE_vs_exonlength]
 join_gene$TE_end <-  as.numeric(levels(join_gene$TE_end))[join_gene$TE_end]
 join_gene$TE_start <-  as.numeric(levels(join_gene$TE_start))[join_gene$TE_start]
 
 #10/ pre-Detailed results
-
-detailed_join_gene <- join_gene[,c("Transcript_id", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "Freq_TE_isoform", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlenght", "TE_id", "TE_chromosome", "TE_start", "TE_end", "TE_localisation", "method", "exon_strand", "exon_number", "total_exon_number", "TE_position_isoform" )]
+detailed_join_gene <- join_gene[,c("Transcript_id", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "Freq_TE_isoform", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlength", "TE_id", "TE_chromosome", "TE_start", "TE_end", "TE_localisation", "method", "exon_strand", "exon_number", "total_exon_number", "TE_position_isoform" )]
 
 #11/ pre-Overview results
-
 stat_TE_gene <- do.call(data.frame, aggregate(TE_gene ~ TE_position_isoform, data=join_gene, FUN=table))
 stat_TE_gene <- as.data.frame(t(stat_TE_gene))
 stat_TE_gene <- setDT(stat_TE_gene, keep.rownames = TRUE )[]
@@ -668,9 +666,8 @@ stat_TE_gene <- setDT(stat_TE_gene)[, paste0("id", 1:2) := tstrsplit(stat_TE_gen
 stat_TE_gene <- stat_TE_gene[,c("id2","first", "middle", "last", "single")]
 colnames(stat_TE_gene)<-c("TE_gene","first", "middle", "last", "single")
 
-#12/ Potential TE-AS splicing sites check analyses
-#check if the analyses TEs are overlaping a splicing site
-
+#12/ TE-AS splicing sites check analyses
+#Check if the analysed TEs are overlaping a splicing site
 splicing_sites <- read.table("../ParasiTE_output/splicing_sites.gff", header = FALSE, sep = '\t', check.names=FALSE, stringsAsFactors=F)
 splicing_sites <- splicing_sites[1:3]
 colnames(splicing_sites)<-c("chromosome","start", "end")
@@ -702,14 +699,11 @@ AS_TEcandidates_ss <- AS_TEcandidates_ss[4]
 colnames(AS_TEcandidates_ss)<-c("TE_id")
 
 
-cat("[STEP4] parasiTE has found TE-G candidates \n")
+cat("[STEP4] ParasiTE has identified TE-Gt candidates \n")
 
-#13/CATANA
-
+#13/Launch CATANA to get AS and ATP predictions
 cat("Classification of the TE-AS and TE-ATP events \n")
-
 system(paste("rm -Rf ../Dependencies/CATANA/Classification"))
-
 system(paste("cd ../Dependencies/CATANA && perl CATANA.pl -i ../../ParasiTE_output/submited_transcripts_annotation.gff3 -o Classification"))
 
 #MXE are not take in account
@@ -719,23 +713,22 @@ bedtools sort -i  pre-Alternative_splicing_events.gff >  Alternative_splicing_ev
 mkdir ../../../ParasiTE_output/Isoform_classification &&
 cp Alternative_splicing_events.sorted.gff ../../../ParasiTE_output/Isoform_classification/Alternative_splicing_events.sorted.gff"))
 
-#awk command to remove line that have a "." at column 5
+#Awk command is used to remove line thats have a "." at column 5
 system(paste("cd ../Dependencies/CATANA/Classification && cat ATSS.gff ATTS.gff AFE.gff ALE.gff > Alternative_transcription_products.gff &&
 awk -F'\t' 'x$5' Alternative_transcription_products.gff > pre-Alternative_transcription_products.gff &&
 bedtools sort -i  pre-Alternative_transcription_products.gff >  Alternative_transcription_products.sorted.gff && 
 cp Alternative_transcription_products.sorted.gff ../../../ParasiTE_output/Isoform_classification/Alternative_transcription_products.sorted.gff"))
 
-#14/ transcript alternative splicing events
-
+#14/ Transcript with alternative splicing events (AS)
 system(paste("awk -F'\t' '$3~/exon/' ../ParasiTE_output/Isoform_classification/Alternative_splicing_events.sorted.gff > ../ParasiTE_output/Isoform_classification/Alternative_splicing_events.mRNA.sorted.gff"))
-
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/Isoform_classification/Alternative_splicing_events.mRNA.sorted.gff > ../ParasiTE_output/Isoform_classification/Alternative_splicing_events.mRNA.sorted.bed"))
 
 CATANA <- read.table("../ParasiTE_output/Isoform_classification/Alternative_splicing_events.mRNA.sorted.bed", header = FALSE, sep = '\t', check.names=FALSE)
 
 colnames(CATANA)<-c("chr","start", "end","info","point","strand","isoform","mRNA", "other","id")
 
-#There is an error here, the number of column is different between long read "paste0("id", 1:5)" or short read "paste0("id", 1:6)", I used the fonction mtry to fix that
+#The number of column is different between Stringtie long read transcriptome "paste0("id", 1:5)" or short read transcriptome "paste0("id", 1:6)", 
+#I used the fonction mtry to fix that
 
 mtry <- try(setDT(CATANA)[, paste0("id", 1:4) := tstrsplit(CATANA$id, ";")], silent=TRUE)
 if (inherits(mtry, "try-error")) {
@@ -760,7 +753,6 @@ CATANA <- subset( CATANA, select = -strand )
 CATANA <- subset( CATANA, select = -point )
 CATANA <- subset( CATANA, select = -info )
 CATANA <- subset( CATANA, select = -chr )
-
 
 CATANA$isoform <- paste(CATANA$isoform,CATANA$start,CATANA$end)
 CATANA <- subset( CATANA, select = -start )
@@ -793,7 +785,7 @@ detailed_join_gene$Exonic_id<- paste(detailed_join_gene$Transcript_id,detailed_j
 
 detailed_join_gene$Exonic_id <- as.character(gsub(' ','_',detailed_join_gene$Exonic_id))
 
-detailed_join_gene <- detailed_join_gene[,c("Exonic_id", "Transcript_id", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "Freq_TE_isoform", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlenght", "TE_id", "TE_chromosome", "TE_start", "TE_end", "TE_localisation", "method", "exon_strand", "exon_number", "total_exon_number", "TE_position_isoform")]
+detailed_join_gene <- detailed_join_gene[,c("Exonic_id", "Transcript_id", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "Freq_TE_isoform", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlength", "TE_id", "TE_chromosome", "TE_start", "TE_end", "TE_localisation", "method", "exon_strand", "exon_number", "total_exon_number", "TE_position_isoform")]
 
 options(warn=-1)
 detailed_join_gene <- left_join(detailed_join_gene, CATANA, by = c('Exonic_id'))
@@ -804,17 +796,15 @@ detailed_join_gene$Alternative_splicing <- as.character(gsub('c','',detailed_joi
 detailed_join_gene$Alternative_splicing <- as.character(gsub('"','',detailed_join_gene$Alternative_splicing))
 detailed_join_gene$Alternative_splicing <- as.character(gsub('<>','',detailed_join_gene$Alternative_splicing))
 
-#15/ transcript alternative transcription products
-
-
+#15/ Transcript with alternative transcription products (ATP)
 system(paste("awk -F'\t' '$3~/exon/' ../ParasiTE_output/Isoform_classification/Alternative_transcription_products.sorted.gff > ../ParasiTE_output/Isoform_classification/Alternative_transcription_products.mRNA.sorted.gff"))
-
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/Isoform_classification/Alternative_transcription_products.mRNA.sorted.gff > ../ParasiTE_output/Isoform_classification/Alternative_transcription_products.mRNA.sorted.bed"))
-
 CATANA <- read.table("../ParasiTE_output/Isoform_classification/Alternative_transcription_products.mRNA.sorted.bed", header = FALSE, sep = '\t', check.names=FALSE)
 colnames(CATANA)<-c("chr","start", "end","info","point","strand","isoform","mRNA", "other","id")
 
-#There is an error here, the number of column is different between long read "paste0("id", 1:5)" or short read "paste0("id", 1:6)", I used the fonction mtry to fix that
+#The number of column is different between Stringtie long read transcriptome "paste0("id", 1:5)" or short read transcriptome "paste0("id", 1:6)", 
+#I used the fonction mtry to fix that
+
 mtry <- try(setDT(CATANA)[, paste0("id", 1:4) := tstrsplit(CATANA$id, ";")], silent=TRUE )
 if (inherits(mtry, "try-error")) {
 CATANA <- setDT(CATANA)[, paste0("id", 1:5) := tstrsplit(CATANA$id, ";")]
@@ -875,14 +865,13 @@ detailed_join_gene$Alternative_transcription <- as.character(gsub('c','',detaile
 detailed_join_gene$Alternative_transcription <- as.character(gsub('"','',detailed_join_gene$Alternative_transcription))
 detailed_join_gene$Alternative_transcription <- as.character(gsub('<>','',detailed_join_gene$Alternative_transcription))
 
-#16/ splicing_site and exons_borders check analyses
+#16/Splicing_site and exons_borders check analysis
 
-#16.1/ Adding Potential splicing_sites check analyses
-
+#16.1/Adding Splicing_sites check analysis
 AS_check <- detailed_join_gene$TE_id %in% AS_TEcandidates_ss$TE_id
 detailed_join_gene <- cbind(detailed_join_gene,AS_check)
 
-#16.2/ Adding Potential exons_borders check analyses
+#16.2/ Adding Exons_borders check analysis
 detailed_join_gene_check <- detailed_join_gene
 
 detailed_join_gene_check$exon_start <- as.numeric(levels(detailed_join_gene_check$exon_start))[detailed_join_gene_check$exon_start]
@@ -897,11 +886,10 @@ detailed_join_gene_check$Exon_check_end <- ifelse((detailed_join_gene_check$TE_e
 detailed_join_gene$Exon_check_start <- detailed_join_gene_check$Exon_check_start
 detailed_join_gene$Exon_check_end <- detailed_join_gene_check$Exon_check_end
 
-detailed_join_gene <- detailed_join_gene[,c("Exonic_id", "Transcript_id", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "Freq_TE_isoform", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end","TE_vs_exonlenght", "TE_id", "TE_chromosome", "TE_start", "TE_end", "TE_localisation", "method", "AS_check", "Exon_check_start", "Exon_check_end","exon_strand", "exon_number", "total_exon_number", "TE_position_isoform", "Alternative_splicing", "Alternative_transcription")]
+detailed_join_gene <- detailed_join_gene[,c("Exonic_id", "Transcript_id", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "Freq_TE_isoform", "FPKM_transcript", "TPM_transcript", "Coverage_transcript", "Coverage_exon", "exon_chromosome", "exon_start", "exon_end","TE_vs_exonlength", "TE_id", "TE_chromosome", "TE_start", "TE_end", "TE_localisation", "method", "AS_check", "Exon_check_start", "Exon_check_end","exon_strand", "exon_number", "total_exon_number", "TE_position_isoform", "Alternative_splicing", "Alternative_transcription")]
 
 #16.3/ MSE are simplified to SE
 # To symplify the AS events, MSE are change into SE events
-#MSE --> SE
 detailed_join_gene$Alternative_splicing <- as.character(gsub('MSE, SE','SE',detailed_join_gene$Alternative_splicing))
 detailed_join_gene$Alternative_splicing <- as.character(gsub('SE, MSE','SE',detailed_join_gene$Alternative_splicing))
 detailed_join_gene$Alternative_splicing <- as.character(gsub('MSE','SE',detailed_join_gene$Alternative_splicing))
@@ -910,7 +898,7 @@ detailed_join_gene$Alternative_splicing <- as.character(gsub('SE, RI, SE','RI, S
 detailed_join_gene$Alternative_splicing <- as.character(gsub('SE, A3SS, SE','A3SS, SE',detailed_join_gene$Alternative_splicing))
 detailed_join_gene$Alternative_splicing <- as.character(gsub('SE, A5SS, SE','A5SS, SE',detailed_join_gene$Alternative_splicing))
 
-#17/ Rules to limit potential false positives predictions
+#17/ Several rules are applied to limit potential false positives predictions
 
 ##Rule 1: If the Freq_TE_isoform is 1 and that the AS check is false (no overlap with a splicing site), do not give AS prediction 
 detailed_join_gene2 <- detailed_join_gene
@@ -971,7 +959,6 @@ detailed_join_gene$Alternative_transcription <- as.character(gsub('@, ','',detai
 detailed_join_gene$Alternative_transcription <- as.character(gsub('@',NA,detailed_join_gene$Alternative_transcription))
 
 #18/ Check if exon candidates are overlaping CDS or 5'UTR or 3'UTR
-head(detailed_join_gene)
 TE_annotation_candidate <- detailed_join_gene[,c("TE_chromosome", "exon_start", "exon_end", "TE_start", "TE_end", "Exonic_id")]
 TE_annotation_candidate$exon_start <- as.numeric(levels(TE_annotation_candidate$exon_start))[TE_annotation_candidate$exon_start]
 TE_annotation_candidate$exon_end <- as.numeric(levels(TE_annotation_candidate$exon_end))[TE_annotation_candidate$exon_end]
@@ -1018,10 +1005,7 @@ TE_annotation_candidate5$cross_start <- ifelse((TE_annotation_candidate5$exon_st
 TE_annotation_candidate5$cross_end <- ifelse((TE_annotation_candidate5$exon_start >= TE_annotation_candidate5$TE_start) & 
 (TE_annotation_candidate5$exon_end <= TE_annotation_candidate5$TE_end), TE_annotation_candidate3$exon_end, TE_annotation_candidate4$cross_end)
 
-
 TE_annotation_candidate_final <- TE_annotation_candidate5[,c("TE_chromosome", "cross_start", "cross_end", "Exonic_id")]
-head(TE_annotation_candidate_final)
-#
 TE_annotation_candidate_final$TE_chromosome <- as.numeric(levels(TE_annotation_candidate$TE_chromosome))[TE_annotation_candidate$TE_chromosome]
 
 write.table(TE_annotation_candidate_final,file="../ParasiTE_output/TE_annotation_candidate.txt",sep = "\t",row.names=F,col.names=F)
@@ -1056,15 +1040,13 @@ treeUTR_Check <- detailed_join_gene$Exonic_id %in% three_results$Exonic_id
 detailed_join_gene <- cbind(detailed_join_gene,treeUTR_Check)
 }
 
-cat("[STEP5] parasiTE has found altTE-G candidates \n")
+cat("[STEP5] ParasiTE has identified altTE-Gi candidates \n")
 
-#19/ First output and add of information for extra outputs
-#19.1/TE-genes
-
-write.table(detailed_join_gene,file="../ParasiTE_output/Results/STEP4_TE-G_candidates/List_TE-G_exonic_level.tab",sep = "\t",row.names=F,col.names=T)
+#19/ First output and add of information for other outputs
+#19.1/List of TE-genes
+write.table(detailed_join_gene,file="../ParasiTE_output/Results/STEP4_TE-Gt_candidates/List_TE-Gt_exonic_level.tab",sep = "\t",row.names=F,col.names=T)
 
 #19.2/ Adding TE-AS events
-
 Alternative_sp <- detailed_join_gene[,c("Gene_id", "TE_id","Alternative_splicing")]
 Alternative_sp$Gene_TE <- paste(Alternative_sp$Gene_id,Alternative_sp$TE_id)
 Alternative_sp$Gene_TE <- as.character(gsub(' ','_',Alternative_sp$Gene_TE ))
@@ -1092,7 +1074,6 @@ overview_gene_TE <- left_join(overview_gene_TE, Alternative_sp, by = c('Gene_TE'
 ##options(warn=0)
 
 #19.3/ Adding TE-ATP events
-
 Alternative_pr <- detailed_join_gene[,c("Gene_id", "TE_id","Alternative_transcription")]
 Alternative_pr$Gene_TE <- paste(Alternative_pr$Gene_id,Alternative_pr$TE_id)
 Alternative_pr$Gene_TE <- as.character(gsub(' ','_',Alternative_pr$Gene_TE ))
@@ -1111,7 +1092,6 @@ overview_gene_TE <- left_join(overview_gene_TE, Alternative_pr, by = c('Gene_TE'
 ##options(warn=0)
 
 #19.3/ Adding method information
-
 method_info <- detailed_join_gene[,c("Gene_id", "TE_id","method")]
 method_info$Gene_TE <- paste(method_info$Gene_id,method_info$TE_id)
 method_info$Gene_TE <- as.character(gsub(' ','_',method_info$Gene_TE ))
@@ -1132,7 +1112,6 @@ overview_gene_TE <- left_join(overview_gene_TE, method_info, by = c('Gene_TE'))
 ##options(warn=0)
 
 #19.4/ Adding exon information
-
 exon_info <- detailed_join_gene[,c("Gene_id", "TE_id","total_exon_number")]
 exon_info$Gene_TE <- paste(exon_info$Gene_id,exon_info$TE_id)
 exon_info$Gene_TE <- as.character(gsub(' ','_',exon_info$Gene_TE ))
@@ -1153,7 +1132,6 @@ overview_gene_TE <- left_join(overview_gene_TE, exon_info, by = c('Gene_TE'))
 overview_gene_TE <- subset( overview_gene_TE, select = -Gene_TE )
 
 #19.5/ Adding position of TEs for every transcripts
-
 overview_gene_TE$TE_gene <- paste(overview_gene_TE$TE_id,overview_gene_TE$Gene_id)
 overview_gene_TE$TE_gene <- as.character(gsub(' ','.',overview_gene_TE$TE_gene ))
 overview_gene_TE$TE_gene <- as.character(gsub("-",".",overview_gene_TE$TE_gene))
@@ -1164,23 +1142,19 @@ overview_gene_TE <- left_join(overview_gene_TE, stat_TE_gene, by = c('TE_gene'))
 ##options(warn=0)
 
 
-#19.6 Adding information about CSD and UTR
-
+#19.6 Adding information about CSD and 5'/3'-UTR
 overview_gene_TE <- overview_gene_TE[!duplicated(overview_gene_TE), ]
-
 overview_gene_TE <- overview_gene_TE[,c("TE_gene", "Gene_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "total_exon_number", "Freq_TE_isoform", "TE_id", "TE_chromosome", "TE_start", "TE_end", "TE_localisation", "method","Alternative_splicing", "Alternative_transcription", "first", "middle", "last", "single")]
 
 
 #20/ Extra outputsTE_gene
-
 #20.1/ list of TE-G candidates
-write.table(overview_gene_TE,file="../ParasiTE_output/Results/STEP4_TE-G_candidates/List_TE-G.tab",sep = "\t",row.names=F,col.names=T)
+write.table(overview_gene_TE,file="../ParasiTE_output/Results/STEP4_TE-Gt_candidates/List_TE-Gt.tab",sep = "\t",row.names=F,col.names=T)
 
 #20.2/ Separate Gene-TE alternative & no alternative transcript events
 overview_gene_TE_alternative <- overview_gene_TE[!(is.na(overview_gene_TE$Alternative_transcription) & is.na(overview_gene_TE$Alternative_splicing)) ,]
 
 #20.3/ list of altTE-G candidates
-
 write.table(overview_gene_TE_alternative,file="../ParasiTE_output/Results/STEP5_altTE-Gi_candidates/List_altTE-Gi.tab",sep = "\t",row.names=F,col.names=T)
 
 #20.4 Separate Transcripts-TEs alternative & no alternative transcript events
@@ -1189,8 +1163,7 @@ detailed_join_gene_alternative <- detailed_join_gene[!(is.na(detailed_join_gene$
 write.table(detailed_join_gene_alternative,file="../ParasiTE_output/Results/STEP5_altTE-Gi_candidates/List_altTE-Gi_exonic_level.tab",sep = "\t",row.names=F,col.names=T)
 
 #20.5 Cleaning
-#system(paste("rm -f ../ParasiTE_output/* 2>/dev/null"))
-
+system(paste("rm -f ../ParasiTE_output/* 2>/dev/null"))
 cat("\nParasiTE has finished, results are in ParasiTE_output directory \n")
 
 
