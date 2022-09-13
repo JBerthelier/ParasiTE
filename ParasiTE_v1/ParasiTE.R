@@ -7,7 +7,7 @@ library(stringr)
 library(dplyr)
 library(tidyr)
 
-#ParasiTE_v1 was wrote by Jérémy Berthelier, 2022, Plant Epigenetics Unit, Okinawa Institute of Science and Technology, Japan
+#ParasiTE_v1 was wrote by Jeremy Berthelier, 2022, Plant Epigenetics Unit, Okinawa Institute of Science and Technology, Japan
 
 #0/ Option and help message
 option_list = list(
