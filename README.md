@@ -1,4 +1,4 @@
-![](https://github.com/JBerthelier/ParasiTE/blob/master/logo.png)
+![](https://github.com/JBerthelier/ParasiTE/blob/master/logo.png| width=100)
 
 # Identification of TE-genes isoforms events
 
