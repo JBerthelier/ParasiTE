@@ -4,7 +4,7 @@
 
 # Invertory of TE-genes isoforms events
 
-In brief, ParasiTE is a new tool that aim to: 
+In brief, ParasiTE is a new tool aiming to: 
 
 1) identify TEs located in exonic or intronic region of genes
 2) detect TEs that are part of gene transcripts and the ones that contribute to alternative isoforms of genes (altTE-Gi).
