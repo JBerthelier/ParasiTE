@@ -1,6 +1,8 @@
-![](https://github.com/JBerthelier/ParasiTE/blob/master/logo.png| width=100)
+<p align="center">
+  <img width="460" height="300" src="https://github.com/JBerthelier/ParasiTE/blob/master/logo.png">
+</p>
 
-# Identification of TE-genes isoforms events
+# Invertory of TE-genes isoforms events
 
 In brief, ParasiTE is a new tool that aim to: 
 
