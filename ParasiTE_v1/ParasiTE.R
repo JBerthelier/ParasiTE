@@ -111,6 +111,8 @@ system(paste("awk -F'\t' '$3~/gene/'", opt$genes, "> ../ParasiTE_output/gene_ann
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/gene_annotation.gff3 > ../ParasiTE_output/pre-gene_annotation.bed && 
 bedtools sort -i ../ParasiTE_output/pre-gene_annotation.bed > ../ParasiTE_output/gene_annotation.bed &&
 rm ../ParasiTE_output/pre-gene_annotation.bed ../ParasiTE_output/gene_annotation.gff3"))
+#bedoops may add unwanted new lines ";zero_length_insertion=True"
+system(paste("sed -i '/;zero_length_insertion=True/d' ../ParasiTE_output/gene_annotation.bed"))
 
 #2.2/ TE annotation
 #Selects the TE annotation
@@ -118,8 +120,10 @@ system(paste("cp ",opt$transposons, "../ParasiTE_output/original_TE_annotation.g
 #Option to remove shorts and/or very large transposons (default more than 50000bp) that can be false positives
 system(paste("awk -F'\t' '{$10 = ($5-$4)+1} 1' OFS='\t' ../ParasiTE_output/original_TE_annotation.gff3 > ../ParasiTE_output/pre-TE_annotation.gff3 && awk -F'\t' '( ($10 >= ",opt$MinLtransposons, ") && ( $10 <= ",opt$MaxLtransposons," ) ) {print $1,$2,$3,$4,$5,$6,$7,$8,$9}' OFS='\t' ../ParasiTE_output/pre-TE_annotation.gff3  > ../ParasiTE_output/TE_annotation.gff3"))
 #Converts and sorts the TE annotation file
-system(paste("convert2bed --input=GFF < ../ParasiTE_output/TE_annotation.gff3 > ../ParasiTE_output/pre-transposons_annotation.bed && 
+system(paste("convert2bed --input=GFF < ../ParasiTE_output/TE_annotation.gff3 > ../ParasiTE_output/pre-transposons_annotation.bed &&
 bedtools sort -i ../ParasiTE_output/pre-transposons_annotation.bed > ../ParasiTE_output/transposons_annotation.bed"))
+#bedoops may introduce unvwanted new lines ";zero_length_insertion=True"
+system(paste("sed -i '/;zero_length_insertion=True/d' ../ParasiTE_output/transposons_annotation.bed"))
 
 #2.3/ Transcriptome dataset
 #Selects the transcript annotation, converts and sorts in bed file
@@ -127,6 +131,9 @@ system(paste("cp ",opt$transcripts," ../ParasiTE_output/submited_transcripts_ann
 system(paste("awk -F'\t' '$3~/transcript/'", opt$transcripts, "> ../ParasiTE_output/transcript_annotation.gff3"))
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/transcript_annotation.gff3 > ../ParasiTE_output/pre-transcript_annotation.bed && 
 bedtools sort -i ../ParasiTE_output/pre-transcript_annotation.bed > ../ParasiTE_output/transcript_annotation.bed"))
+#bedoops may introduce unvwanted new lines ";zero_length_insertion=True"
+system(paste("sed -i '/;zero_length_insertion=True/d' ../ParasiTE_output/transcript_annotation.bed"))
+
 
 #Selects the exon annotation, converts and sorts in bed file
 system(paste("awk -F'\t' '$3~/exon/'", opt$transcripts, "> ../ParasiTE_output/exon_transcript_annotation.gff3")) 
@@ -138,14 +145,22 @@ bedtools sort -i ../ParasiTE_output/pre-exon_transcript_annotation.bed > ../Para
 system(paste("awk -F'\t' '$3~/CDS/'", opt$genes, "> ../ParasiTE_output/cds_annotation.gff3"))
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/cds_annotation.gff3 > ../ParasiTE_output/pre-cds_annotation.bed && 
 bedtools sort -i ../ParasiTE_output/pre-cds_annotation.bed > ../ParasiTE_output/cds_annotation.bed"))
+#bedoops may add unwanted new lines ";zero_length_insertion=True"
+system(paste("sed -i '/;zero_length_insertion=True/d' ../ParasiTE_output/cds_annotation.bed"))
+
 #Selects the five_prime_UTR annotation, converts and sorts in bed file
 system(paste("awk -F'\t' '$3~/five_prime_utr/'", opt$genes, "> ../ParasiTE_output/five_annotation.gff3"))
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/five_annotation.gff3 > ../ParasiTE_output/pre-five_annotation.bed && 
 bedtools sort -i ../ParasiTE_output/pre-five_annotation.bed > ../ParasiTE_output/five_annotation.bed"))
+#bedoops may add unwanted new lines ";zero_length_insertion=True"
+system(paste("sed -i '/;zero_length_insertion=True/d' ../ParasiTE_output/five_annotation.bed"))
+
 #Selects the three_prime_UTR annotation, converts and sorts in bed file
 system(paste("awk -F'\t' '$3~/three_prime_utr/'", opt$genes, "> ../ParasiTE_output/three_annotation.gff3"))
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/three_annotation.gff3 > ../ParasiTE_output/pre-three_annotation.bed && 
 bedtools sort -i ../ParasiTE_output/pre-three_annotation.bed > ../ParasiTE_output/three_annotation.bed"))
+#bedoops may add unwanted new lines ";zero_length_insertion=True"
+system(paste("sed -i '/;zero_length_insertion=True/d' ../ParasiTE_output/three_annotation.bed"))
 
 #3/ STEP1: Reduce gene-like transposable elements
 #3.1/ Remove gene-like transposable elements from gene model annotation and transcriptome dataset
@@ -159,6 +174,7 @@ system(paste("bedtools intersect -nonamecheck -f ", opt$Tfalsepositive," -wo -a 
 filter1 <- "awk 'BEGIN{FS=OFS=\"\t\"} {print $11,$12,$13,$14,$15,$16,$17,$18,$19,$20}' ../ParasiTE_output/gene_transcript_FP.bed > ../ParasiTE_output/transcript_FP1.bed"
 system(paste(filter1))
 system(paste("cp ../ParasiTE_output/transcript_FP1.bed ../ParasiTE_output/Results/STEP1_Remove_gene-like_TEs_transcripts/Removed_transcripts_using_TE_annotation.bed"))
+
 
 #3.2/ (optional) Load of the gene-like TEs annotation file 
 #Check if a file is provided
@@ -191,6 +207,8 @@ transcript_annotation <- read.table("../ParasiTE_output/transcript_annotation.be
 #Check if a file containing transcripts that are gene-like TEs exist
 if (file.exists("../ParasiTE_output/transcript_FP.uniq.sorted.bed")&(file.size("../ParasiTE_output/transcript_FP.uniq.sorted.bed")>0)) {
 #R loads the information of transcripts that are considered as gene-like TEs
+
+
 transcript_FP <-  read.table("../ParasiTE_output/transcript_FP.uniq.sorted.bed", header = FALSE, sep = '\t', check.names=FALSE)
 colnames(transcript_FP)<-c("chromosome","start", "end", "poin", "other", "strand","tool", "type", "point","id")
 transcript_FP <- cSplit(transcript_FP,"id",";")
@@ -207,6 +225,9 @@ cat("no gene-like TEs false Positive found \n")
 system(paste("cp ../ParasiTE_output/transcript_annotation.bed ../ParasiTE_output/transcript_annotation_wo_FP.bed"))
 system(paste("cp ../ParasiTE_output/exon_transcript_annotation.bed ../ParasiTE_output/exon_transcript_annotation_wo_FP.bed"))
  }
+
+#bedoops may add unwanted new lines ";zero_length_insertion=True"
+system(paste("sed -i '/;zero_length_insertion=True/d' ../ParasiTE_output/exon_transcript_annotation_wo_FP.bed"))
 
 system(paste("cp ../ParasiTE_output/exon_transcript_annotation_wo_FP.bed ../ParasiTE_output/Results/STEP1_Remove_gene-like_TEs_transcripts/Cleaned_transcripts_annotation.bed"))
 cat("[STEP1] ParasiTE has removed predicted genes-like TE transcripts \n")
@@ -721,9 +742,13 @@ awk -F'\t' 'x$5' Alternative_transcription_products.gff > pre-Alternative_transc
 bedtools sort -i  pre-Alternative_transcription_products.gff >  Alternative_transcription_products.sorted.gff && 
 cp Alternative_transcription_products.sorted.gff ../../../ParasiTE_output/Isoform_classification/Alternative_transcription_products.sorted.gff"))
 
+
 #14/ Transcript with alternative splicing events (AS)
 system(paste("awk -F'\t' '$3~/exon/' ../ParasiTE_output/Isoform_classification/Alternative_splicing_events.sorted.gff > ../ParasiTE_output/Isoform_classification/Alternative_splicing_events.mRNA.sorted.gff"))
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/Isoform_classification/Alternative_splicing_events.mRNA.sorted.gff > ../ParasiTE_output/Isoform_classification/Alternative_splicing_events.mRNA.sorted.bed"))
+#bedoops may add unwanted new lines ";zero_length_insertion=True"
+system(paste("sed -i '/;zero_length_insertion=True/d' ../ParasiTE_output/Isoform_classification/Alternative_splicing_events.mRNA.sorted.bed"))
+
 
 CATANA <- read.table("../ParasiTE_output/Isoform_classification/Alternative_splicing_events.mRNA.sorted.bed", header = FALSE, sep = '\t', check.names=FALSE)
 
@@ -801,6 +826,10 @@ detailed_join_gene$Alternative_splicing <- as.character(gsub('<>','',detailed_jo
 #15/ Transcript with alternative transcription products (ATP)
 system(paste("awk -F'\t' '$3~/exon/' ../ParasiTE_output/Isoform_classification/Alternative_transcription_products.sorted.gff > ../ParasiTE_output/Isoform_classification/Alternative_transcription_products.mRNA.sorted.gff"))
 system(paste("convert2bed --input=GFF < ../ParasiTE_output/Isoform_classification/Alternative_transcription_products.mRNA.sorted.gff > ../ParasiTE_output/Isoform_classification/Alternative_transcription_products.mRNA.sorted.bed"))
+#bedoops may add unwanted new lines ";zero_length_insertion=True"
+system(paste("sed -i '/;zero_length_insertion=True/d' ../ParasiTE_output/Isoform_classification/Alternative_transcription_products.mRNA.sorted.bed"))
+
+
 CATANA <- read.table("../ParasiTE_output/Isoform_classification/Alternative_transcription_products.mRNA.sorted.bed", header = FALSE, sep = '\t', check.names=FALSE)
 colnames(CATANA)<-c("chr","start", "end","info","point","strand","isoform","mRNA", "other","id")
 
@@ -1013,6 +1042,10 @@ TE_annotation_candidate_final$TE_chromosome <- as.numeric(levels(TE_annotation_c
 write.table(TE_annotation_candidate_final,file="../ParasiTE_output/TE_annotation_candidate.txt",sep = "\t",row.names=F,col.names=F)
 system(paste("bedtools sort -i  ../ParasiTE_output/TE_annotation_candidate.txt >  ../ParasiTE_output/TE_annotation_candidate.bed"))
 
+
+detailed_join_gene <- detailed_join_gene[,c("Exonic_id", "Transcript_id", "Gene_id", "Gene_ref_id", "Total_number_transcripts", "Total_transcripts_with_this_TEs", "Freq_TE_isoform", "exon_chromosome", "exon_start", "exon_end", "TE_vs_exonlength", "TE_id", "TE_chromosome", "TE_start", "TE_end", "TE_localisation", "method", "AS_check", "Exon_check_start", "Exon_check_end", "exon_strand", "exon_number", "total_exon_number", "TE_position_isoform", "Alternative_splicing", "Alternative_transcription")]
+
+
 #18.1/ Check CDS
 
 if (is.null(opt$Where)){
@@ -1045,6 +1078,7 @@ detailed_join_gene <- cbind(detailed_join_gene,treeUTR_Check)
 cat("[STEP5] ParasiTE has identified altTE-Gi candidates \n")
 
 #19/ First output and add of information for other outputs
+
 #19.1/List of TE-genes
 write.table(detailed_join_gene,file="../ParasiTE_output/Results/STEP4_TE-Gt_candidates/List_TE-Gt_exonic_level.tab",sep = "\t",row.names=F,col.names=T)
 
