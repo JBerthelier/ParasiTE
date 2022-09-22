@@ -79,15 +79,12 @@ ParasiTE outputs are in ParasiTE_output (a new run of ParasiTE will delet the pr
 `Rscript /patway/to/ParasiTE_v1.r -T /Pathway/to/TE_annotation.gff3 -G /pathway/to/gene_annotation.gtf 
 -R /pathway/to/transcripts_annotation.gtf -L /pathway/to/gene-like_TE_annotation.gff3 -P {mode}`
 
-**ParasiTE was built to work with Stringtie2 de novo transcriptome (but can use custom transcriptomes).** 
-
-Indeed, in most reference annotation altTE-G transcripts are not resolved by common assemblers (Cufflinks etc ...). 
+**ParasiTE was built to work with Stringtie2 de novo transcriptome (but can use custom transcriptomes see how to use it below).** 
 
 We choose [Stringtie2](https://ccb.jhu.edu/software/stringtie/), because it allows to identify chimeric transcript such as altTE-Gi.
-
 Moreover. Stringtie2 supports short reads (eg. Illumina) or long reads (eg. PacBio or Oxford Nanopore).
 
-**For the -P mode**
+**For the -P {mode}**
 
 1) Transcriptomes obtained with Stringtie2 from long reads alignement
 
