@@ -92,14 +92,20 @@ Moreover. Stringtie2 supports short reads (eg. Illumina) or long reads (eg. PacB
 
 - If the transcriptome was obtained with Stringtie2 with the -R mode you must use `-P SR`  
 
-2) Transcriptomes obtained with Stringtie2 from short reads alignement
+2) Transcriptome annotation obtained with Stringtie2 from short reads alignement
  you must use `-P SL`  
 
 3) Transcriptome obtained by stringtie2 Merge option or custom transcriptome following the same format as Stringtie2
 you must use `-P SA`   
 
-4) Custom transcriptome following the below format (such as "/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf" )
+4) Custom transcriptome following the structure dysplayed below (such as "/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf" )
 you must use `-P SC`
+
+**Input data structure**
+
+For gene annotation, tramscriptome annotation, TE annotation and gene-like TE annotation, the seqname must be numerique (see table) 
+
+*Transcrptome*
 
 Be careful in this format the exon numbering is different than for Stringtie2 transcripts.
 In this case exon numbering are related to the transcript sens, please see example below: 
