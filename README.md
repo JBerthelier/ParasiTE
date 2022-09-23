@@ -143,7 +143,7 @@ otherwise ParasiTE is not able to works properly
 
 **TE annotation**
 
-We used the following structure for TE annotation, please provide a "ID=AT1TE00025" in the attribute
+We used the following structure for TE annotation, please provide a "ID=theTEid" in the attribute (see example in Table 2)
 
 Table 2:
 |seqname|source|feature   |start |end  |score|strand|frame|attribute                                                     |
