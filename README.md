@@ -101,11 +101,13 @@ you must use `-P SA`
 4) Custom transcriptome following the structure dysplayed below (such as "/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf" )
 you must use `-P SC`
 
-**Input data structure**
+# Input data structure
 
-For gene annotation, tramscriptome annotation, TE annotation and gene-like TE annotation, the seqname must be numerique (see table) 
+For gene annotation, tramscriptome annotation, TE annotation and gene-like TE annotation, the seqname must be numerique (see table 1) 
 
-*Transcrptome*
+**Transcriptome annotation**
+
+ParasiTE was built to work with Stringtie2 format transcriptome  (see table 1)
 
 Be careful in this format the exon numbering is different than for Stringtie2 transcripts.
 In this case exon numbering are related to the transcript sens, please see example below: 
@@ -113,6 +115,8 @@ In this case exon numbering are related to the transcript sens, please see examp
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/Help_numbering.png)
 
 For those two types of custom transcriptome (SC or SA) the attribute must be like below:
+
+Table 1:
 
 |seqname|source|feature   |start |end  |score|strand|frame|attribute                                                  |
 |------:|-----:|---------:|-----:|----:|----:|-----:|----:|----------------------------------------------------------:|
@@ -137,6 +141,24 @@ etc...
 -for exon: gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";
 
 otherwise ParasiTE is not able to works properly
+
+**TE annotation**
+
+|seqname|source|feature   |start |end  |score|strand|frame|attribute                                                  |
+|------:|-----:|---------:|-----:|----:|----:|-----:|----:|----------------------------------------------------------:|
+|1      |Ref   |transcript|6788  |9130 |1000 | +    | .   |gene_id "ID.1"; transcript_id "ID.1.1";                    |
+|1      |Ref   |exon      |6788  |7069 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";|
+|1      |Ref   |exon      |8571  |9130 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "2";|
+|1      |Ref   |transcript|3631  |5899 |1000 | +    | .   |gene_id "ID.1"; transcript_id "ID.1.2";                    |
+|1      |Ref   |exon      |6788  |7069 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "1";|
+|1      |Ref   |exon      |7157  |7450 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "2";|
+|1      |Ref   |exon      |8571  |8737 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "3";|
+|1      |Ref   |transcript|3631  |5899 |1000 | +    | .   |gene_id "ID.2"; transcript_id "ID.2.1";                    |
+|1      |Ref   |exon      |6788  |7069 |1000 | .    | .   |gene_id "ID.2"; transcript_id "ID.2.1"; exon_number_id "1";|
+etc...
+
+
+
 
 # Run Parasite Demo data
 
