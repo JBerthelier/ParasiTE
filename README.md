@@ -107,7 +107,7 @@ For gene annotation, tramscriptome annotation, TE annotation and gene-like TE an
 
 **Transcriptome annotation**
 
-ParasiTE was built to work with Stringtie2 format transcriptome  (see table 1)
+ParasiTE was built to work with Stringtie2 format transcriptome  (see Table 1)
 
 Be careful in this format the exon numbering is different than for Stringtie2 transcripts.
 In this case exon numbering are related to the transcript sens, please see example below: 
