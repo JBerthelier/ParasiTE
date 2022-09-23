@@ -101,7 +101,7 @@ you must use `-P SA`
 4) Custom transcriptome following the structure dysplayed below (such as "/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf" )
 you must use `-P SC`
 
-** Input data structure **
+**Input data structure**
 
 For gene annotation, tramscriptome annotation, TE annotation and gene-like TE annotation, the seqname must be numerique (no "Chr1" but 1, no "Mit" but a number) (see table 1) 
 
