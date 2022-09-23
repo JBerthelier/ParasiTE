@@ -101,7 +101,7 @@ you must use `-P SA`
 4) Custom transcriptome following the structure dysplayed below (such as "/Demo_data/Athaliana_447_Araport11.transcript_exons.for_ParasiTE.gtf" )
 you must use `-P SC`
 
-# Input data structure
+** Input data structure **
 
 For gene annotation, tramscriptome annotation, TE annotation and gene-like TE annotation, the seqname must be numerique (no "Chr1" but 1, no "Mit" but a number) (see table 1) 
 
@@ -131,7 +131,7 @@ Table 1:
 |1      |Ref   |exon      |6788  |7069 |1000 | .    | .   |gene_id "ID.2"; transcript_id "ID.2.1"; exon_number_id "1";|
 etc...
 
-**Be careful** 
+*Be careful* 
 -For now, ParasiTE only works with a "seqname" having a **number** has showed in table (no characters allowed, in example "1" corresponds to "chromosome 1").
 
 "Attribute" must followed the correct format as showed: 
