@@ -136,7 +136,7 @@ etc...
 
 -"Attribute" must followed the correct format as showed: 
 
--for transcript:  gene_id "ID.1"; transcript_id "ID.1.1"; ("ÏD" can be any others word, such as GENE.1, transcript_id "GENE.1.1")
+-for transcript:  gene_id "ID.1"; transcript_id "ID.1.1"; ("ÏD" can be any other word, such as GENE.1, transcript_id "GENE.1.1")
 
 -for exon: gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";
 
