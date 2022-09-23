@@ -103,7 +103,7 @@ you must use `-P SC`
 
 # Input data structure
 
-For gene annotation, tramscriptome annotation, TE annotation and gene-like TE annotation, the seqname must be numerique (see table 1) 
+For gene annotation, tramscriptome annotation, TE annotation and gene-like TE annotation, the seqname must be numerique (no "Chr1" but 1, no "Mit" but a number) (see table 1) 
 
 **Transcriptome annotation**
 
@@ -131,7 +131,6 @@ Table 1:
 |1      |Ref   |exon      |6788  |7069 |1000 | .    | .   |gene_id "ID.2"; transcript_id "ID.2.1"; exon_number_id "1";|
 etc...
 
-
 **Be careful** 
 -For now, ParasiTE only works with a "seqname" having a **number** has showed in table (no characters allowed, in example "1" corresponds to "chromosome 1").
 
@@ -144,20 +143,16 @@ otherwise ParasiTE is not able to works properly
 
 **TE annotation**
 
-|seqname|source|feature   |start |end  |score|strand|frame|attribute                                                  |
-|------:|-----:|---------:|-----:|----:|----:|-----:|----:|----------------------------------------------------------:|
-|1      |Ref   |transcript|6788  |9130 |1000 | +    | .   |gene_id "ID.1"; transcript_id "ID.1.1";                    |
-|1      |Ref   |exon      |6788  |7069 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "1";|
-|1      |Ref   |exon      |8571  |9130 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.1"; exon_number_id "2";|
-|1      |Ref   |transcript|3631  |5899 |1000 | +    | .   |gene_id "ID.1"; transcript_id "ID.1.2";                    |
-|1      |Ref   |exon      |6788  |7069 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "1";|
-|1      |Ref   |exon      |7157  |7450 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "2";|
-|1      |Ref   |exon      |8571  |8737 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "3";|
-|1      |Ref   |transcript|3631  |5899 |1000 | +    | .   |gene_id "ID.2"; transcript_id "ID.2.1";                    |
-|1      |Ref   |exon      |6788  |7069 |1000 | .    | .   |gene_id "ID.2"; transcript_id "ID.2.1"; exon_number_id "1";|
+We used the following structure for TE annotation, please provide a "ID=AT1TE00025" in the attribute
+
+Table 2:
+|seqname|source|feature   |start |end  |score|strand|frame|attribute                                                     |
+|------:|-----:|---------:|-----:|----:|----:|-----:|----:|-------------------------------------------------------------:|
+|1      |Ref   |TE        |17024 |18924|.    | .    | .   |ID=AT1TE00025;Number=594947;super_family=DHX;family=ATREP3    |
+|1      |Ref   |TE        |18331 |18642|.    | .    | .   |ID=AT1TE00030;Number=597081;super_family=DTA;family=ATHATN7   |
+|1      |Ref   |TE        |55676 |56576|.    | .    | .   |ID=AT1TE00150;Number=592885;super_family=DTA;family=SIMPLEHAT1|
+
 etc...
-
-
 
 
 # Run Parasite Demo data
