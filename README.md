@@ -26,7 +26,7 @@ ParasiTE is composed of five main steps:
 
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/ParasiTE_steps_illustration.png)
 
-# Prerequise to run ParasiTE in linux
+# Prerequisites to run ParasiTE in linux
 
 0) Download ParasiTE:
 
