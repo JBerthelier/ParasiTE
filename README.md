@@ -75,21 +75,23 @@ ParasiTE outputs are in ParasiTE_output (a new run of ParasiTE will delet the pr
 # Run Parasite demo data to test your installation
 
 1. decompress folder
+`cd /ParasiTE/`
 `tar -xvzf Demo_data_Araport11.tar.gz`
 
 2. run the command
 
-Rscript /Fullpathway/ParasiTE-master/ParasiTE_v1/ParasiTE_v1.r -T /Fullpathway/ParasiTE-master/Demo_data_Araport11/TEs_urgi_tair10.min200.gff3 -R /Fullpathway/ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.transcript_exons.for_ParasiTE_SC.gtf -G /Fullpathway/`ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.gene.gff3 -L /Fullpathway/`ParasiTE-master/Demo_data_Araport11/TAIR10-Panda_cat_TE_gene-like.gff3 -P SC
+Rscript /Fullpathway/ParasiTE/ParasiTE_v1/ParasiTE.R -T /Fullpathway/ParasiTE/Demo_data_Araport11/TEs_urgi_tair10.min200.gff3 -R /Fullpathway/ParasiTE/Demo_data_Araport11/Athaliana_447_Araport11.transcript_exons.for_ParasiTE_SC.gtf -G /Fullpathway/ParasiTE/Demo_data_Araport11/Athaliana_447_Araport11.gene.gff3 -L /Fullpathway/ParasiTE/Demo_data_Araport11/TAIR10-Panda_cat_TE_gene-like.gff3 -P SC
 
 **/Fullpathway/** has to be replaced by your data pathway
 
+If the script finished without errors and you get output data in ParasiTE_output (you should have output data in teh 5 directories, STEP1 to STEP5) your installation is well done.
 
 # Run your data with ParasiTE (please read until the end)
 
 **The basic command is:**
 
-`Rscript /patway/to/ParasiTE_v1.r -T /Pathway/to/TE_annotation.gff3 -G /pathway/to/gene_annotation.gtf 
--R /pathway/to/transcripts_annotation.gtf -L /pathway/to/gene-like_TE_annotation.gff3 -P {mode}`
+`Rscript /Fullpathway/ParasiTE/ParasiTE_v1/ParasiTE.R -T /Fullpathway/TE_annotation.gff3 -G /Fullpathway/gene_annotation.gtf 
+-R /Fullpathway/transcripts_annotation.gtf -L /Fullpathway/gene-like_TE_annotation.gff3 -P {mode}`
 
 **ParasiTE was built to work with Stringtie2 de novo transcriptome (but can use custom transcriptomes see how to use it below).** 
 
@@ -205,7 +207,7 @@ In "List_altTE-G.tab"
 
 # Parasite help
 
-`Rscript /patway/to/ParasiTE_v1.r -h`
+`Rscript /Fullpathway/ParasiTE.R -h`
 
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/Help_illustration.PNG)
 
