@@ -72,7 +72,19 @@ ParasiTE outputs are in ParasiTE_output (a new run of ParasiTE will delet the pr
 - List of altTE-gene candidates
 
 
-# Run ParasiTE (please read until the end)
+# Run Parasite demo data to test your installation
+
+1. decompress folder
+`tar -xvzf Demo_data_Araport11.tar.gz`
+
+2. run the command
+
+Rscript /Fullpathway/ParasiTE-master/ParasiTE_v1/ParasiTE_v1.r -T /Fullpathway/ParasiTE-master/Demo_data_Araport11/TEs_urgi_tair10.min200.gff3 -R /Fullpathway/ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.transcript_exons.for_ParasiTE_SC.gtf -G /Fullpathway/`ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.gene.gff3 -L /Fullpathway/`ParasiTE-master/Demo_data_Araport11/TAIR10-Panda_cat_TE_gene-like.gff3 -P SC
+
+**/Fullpathway/** has to be replaced by your data pathway
+
+
+# Run your data with ParasiTE (please read until the end)
 
 **The basic command is:**
 
@@ -154,17 +166,6 @@ Table 2:
 |1      |Ref   |TE        |55676 |56576|.    | .    | .   |ID=AT1TE00150;Number=592885;super_family=DTA;family=SIMPLEHAT1|
 
 etc...
-
-
-# Run Parasite Demo data
-1. decompress folder
-`tar -xvzf Demo_data_Araport11.tar.gz`
-
-2. run the command
-
-Rscript `/Fullpathway/`ParasiTE-master/ParasiTE_v1/ParasiTE_v1.r -T `/Fullpathway/`ParasiTE-master/Demo_data_Araport11/TEs_urgi_tair10.min200.gff3 -R `/Fullpathway/`ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.transcript_exons.for_ParasiTE_SC.gtf -G `/Fullpathway/`ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.gene.gff3 -L `/Fullpathway/`ParasiTE-master/Demo_data_Araport11/TAIR10-Panda_cat_TE_gene-like.gff3 -P SC`
-
-`/Fullpathway/` has to be replaced by your data pathway
 
 
 # Detailled outputs
