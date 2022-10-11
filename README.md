@@ -157,10 +157,15 @@ etc...
 
 
 # Run Parasite Demo data
-
+1. decompress folder
 `tar -xvzf Demo_data_Araport11.tar.gz`
 
-Rscript /Fullpathway/ParasiTE-master/ParasiTE_v1/ParasiTE_v1.r -T /Fullpathway/ParasiTE-master/Demo_data_Araport11/TEs_urgi_tair10.min200.gff3 -R /Fullpathway/ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.transcript_exons.for_ParasiTE_SC.gtf -G /Fullpathway/ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.gene.gff3 -L /Fullpathway/ParasiTE-master/Demo_data_Araport11/TAIR10-Panda_cat_TE_gene-like.gff3 -P SC
+2. run the command
+
+Rscript `/Fullpathway/`ParasiTE-master/ParasiTE_v1/ParasiTE_v1.r -T `/Fullpathway/`ParasiTE-master/Demo_data_Araport11/TEs_urgi_tair10.min200.gff3 -R `/Fullpathway/`ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.transcript_exons.for_ParasiTE_SC.gtf -G `/Fullpathway/`ParasiTE-master/Demo_data_Araport11/Athaliana_447_Araport11.gene.gff3 -L `/Fullpathway/`ParasiTE-master/Demo_data_Araport11/TAIR10-Panda_cat_TE_gene-like.gff3 -P SC`
+
+`/Fullpathway/` has to be replaced by your data pathway
+
 
 # Detailled outputs
 
