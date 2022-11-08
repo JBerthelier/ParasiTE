@@ -72,8 +72,9 @@ Results are in "ParasiTE_output" directory:
 
 # Run Parasite demo data to test your installation
 
-1. decompress folder
+1. extract the folder
 `cd /ParasiTE/`
+
 `tar -xvzf Demo_data_Araport11.tar.gz`
 
 2. run the command
