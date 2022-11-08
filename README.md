@@ -79,7 +79,7 @@ Results are in "ParasiTE_output" directory:
 
 2. run the command
 
-Rscript /Fullpathway/ParasiTE/ParasiTE_v1/ParasiTE.R -T /Fullpathway/ParasiTE/Demo_data_Araport11/TEs_urgi_tair10.min200.gff3 -R /Fullpathway/ParasiTE/Demo_data_Araport11/Athaliana_447_Araport11.transcript_exons.for_ParasiTE_SC.gtf -G /Fullpathway/ParasiTE/Demo_data_Araport11/Athaliana_447_Araport11.gene.gff3 -L /Fullpathway/ParasiTE/Demo_data_Araport11/TAIR10-Panda_cat_TE_gene-like.gff3 -P SC
+`Rscript /Fullpathway/ParasiTE/ParasiTE_v1/ParasiTE.R -T /Fullpathway/ParasiTE/Demo_data_Araport11/TEs_urgi_tair10.min200.gff3 -R /Fullpathway/ParasiTE/Demo_data_Araport11/Athaliana_447_Araport11.transcript_exons.for_ParasiTE_SC.gtf -G /Fullpathway/ParasiTE/Demo_data_Araport11/Athaliana_447_Araport11.gene.gff3 -L /Fullpathway/ParasiTE/Demo_data_Araport11/TAIR10-Panda_cat_TE_gene-like.gff3 -P SC`
 
 **/Fullpathway/** has to be replaced by your data pathway
 
