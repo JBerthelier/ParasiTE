@@ -185,10 +185,10 @@ In "List_altTE-G.tab"
 |-------------------------------:|--------------------------------------------------------------------------------:|
 |TE_gene                         |The id of the TE-gene event                                                      | 
 |Gene_id                         |The id of the gene                                                               |
-|Total_number_transcripts        |Number of isoform transcribed by the gene                                        |
-|Total_transcripts_with_TE       |Number of isoform transcribed by the gene overlapped by the TE                   |
-|total_exon_number               |Number of isoform transcribed by the gene overlapping the TE                     |
-|Freq_TE_isoform                 |Frequences of isoform overlapped by the TEs for the gene                         |
+|Total_number_transcripts        |Number of isoforms transcribed by the gene                                       |
+|Total_transcripts_with_TE       |Number of isoforms transcribed by the gene overlapped by the TE                  |
+|total_exon_number               |Number of isoforms transcribed by the gene overlapping the TE                    |
+|Freq_TE_isoform                 |Frequence of isoforms overlapped by the TEs for the gene                         |
 |TE_id                           |The id of the TE                                                                 |
 |TE_chromosome                   |The Chromosome location of the TE annotation                                     |
 |TE_start                        |The start location of the TE annotation                                          |
