@@ -32,7 +32,7 @@ ParasiTE is composed of five main steps:
 
 `git clone https://github.com/JBerthelier/ParasiTE.git`
 
-1) R (version 3.6.1 was tested) https://www.r-project.org/
+1) R (versions 3.6.0 and 3.6.1 were tested) https://www.r-project.org/
 
 2) R libraries: 
 - [optparse](https://cran.r-project.org/web/packages/optparse/readme/README.html)  `install.packages("optparse")`
@@ -46,7 +46,7 @@ ParasiTE is composed of five main steps:
 you can install locally or with conda 
 `conda install bedtools`
 
-4) [BEDOPS](https://bedops.readthedocs.io/en/latest/index.html) (versions 2.4.36 was tested)
+4) [BEDOPS](https://bedops.readthedocs.io/en/latest/index.html) (version 2.4.36 was tested)
 you can install locally or with conda 
 `conda install -c bioconda bedops`
 
@@ -71,7 +71,7 @@ Results are in "ParasiTE_output" directory:
 
 # Run Parasite demo data to test your installation
 
-Expected run time for demo data was tested on a Linux Machine Ubuntu 8G of memory:  
+Expected run time for demo data is 2 min (it was tested on a Linux Machine Ubuntu with 8Gb of memory)  
 
 1. extract the folder
 `cd /ParasiTE/`
