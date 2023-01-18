@@ -2,12 +2,12 @@
   <img width="460" height="300" src="https://github.com/JBerthelier/ParasiTE/blob/master/logo.png">
 </p>
 
-# Inventory of transposon-related gene isoforms events (TE-Gi)
+# Inventory of transposon-related gene isoforms events
 
 In brief, ParasiTE is a new tool aiming to: 
 
 1) identify TEs located in exonic or intronic region of genes
-2) detect TEs that are part of gene transcripts and the ones that contribute to alternative isoforms of genes (altTE-Gi).
+2) detect TEs that are part of gene transcripts and the ones that contribute to alternative isoforms of genes (ATE-G isoforms).
 
 ParasiTE detect candidates for TE-AS and TE-ATP events as illustrate below using [CATANA](https://github.com/shiauck/CATANA) predictions:
 
