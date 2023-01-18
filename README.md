@@ -26,7 +26,9 @@ ParasiTE is composed of five main steps:
 
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/ParasiTE_steps_illustration.png)
 
-# Prerequisites to run ParasiTE in linux (installation time of around 30 min)
+# Prerequisites to run ParasiTE in linux 
+
+An installation time of around 40 min if you need to install all dependencies
 
 0) Download ParasiTE:
 
