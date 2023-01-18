@@ -26,7 +26,7 @@ ParasiTE is composed of five main steps:
 
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/ParasiTE_steps_illustration.png)
 
-# Prerequisites to run ParasiTE in linux
+# Prerequisites to run ParasiTE in linux (installation time of around 1 hour)
 
 0) Download ParasiTE:
 
@@ -42,11 +42,11 @@ ParasiTE is composed of five main steps:
 - [splitstackshape](https://www.r-project.org/nosvn/pandoc/splitstackshape.html) `install.packages("splitstackshape")`
 - [tidyr](https://www.tidyverse.org/blog/2019/09/tidyr-1-0-0/) `install.packages("tidyr")`
  
-3) [bedtools](https://bedtools.readthedocs.io/en/latest/index.html) (version XXX was tested)
+3) [bedtools](https://bedtools.readthedocs.io/en/latest/index.html) (versions 2.27.1 and 2.29.2 were tested)
 you can install locally or with conda 
 `conda install bedtools`
 
-4) [BEDOPS](https://bedops.readthedocs.io/en/latest/index.html) (version XXX was tested)
+4) [BEDOPS](https://bedops.readthedocs.io/en/latest/index.html) (versions 2.4.36 was tested)
 you can install locally or with conda 
 `conda install -c bioconda bedops`
 
