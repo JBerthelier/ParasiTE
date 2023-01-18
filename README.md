@@ -69,10 +69,9 @@ Results are in "ParasiTE_output" directory:
 - List of TE-genes candidates
 - List of altTE-gene candidates
 
-
 # Run Parasite demo data to test your installation
 
-Expected run time for demo data on a Linux Machine 8G of memory 
+Expected run time for demo data was tested on a Linux Machine Ubuntu 8G of memory:  
 
 1. extract the folder
 `cd /ParasiTE/`
