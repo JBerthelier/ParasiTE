@@ -21,8 +21,8 @@ ParasiTE is composed of five main steps:
 1) Remove of transcripts of gene-like TEs (transcripts of active TEs which are not involved in gene transcripts)
 2) Discrimination of intragenic and intergenic TEs
 3) Discrimination of intronic and exonic TEs
-4) Detection of TE-gene isoforms (TE-Gi) events
-5) Detection of alternative TE-gene isoforms (altTE-Gi) events
+4) Detection of TE-gene (TE-G) transcripts events
+5) Detection of alternative TE-gene (ATE-G) isoform events
 
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/ParasiTE_steps_illustration.png)
 
@@ -69,7 +69,7 @@ Results are in "ParasiTE_output" directory:
 - Annotation of intergenic and intragenic TEs.
 - Among Intragenic TEs, the annotation of intragenic (intronic and exonic) TEs.
 - List of TE-genes candidates
-- List of altTE-gene candidates
+- List of ATE-G isoforms candidates
 
 # Run Parasite demo data to test your installation
 
@@ -179,8 +179,8 @@ In /ParasiTE_output/Results/STEP4_TE-G_candidates/
 
 In /ParasiTE_output/Results/STEP5_altTE-G_candidates/
 
-- List_altTE-G.tab ## List of Genes that are involved in altTE-Gi with a TE. 
-- List_altTE-G_exonic_level.tab ## List of exons that are involved in altTE-Gi with a TE. 
+- List_altTE-G.tab ## List of Genes that are involved in ATE-G isoforms. 
+- List_altTE-G_exonic_level.tab ## List of exons that are involved in ATE-G isoforms. 
 
 In "List_altTE-G.tab"
 
@@ -197,7 +197,7 @@ In "List_altTE-G.tab"
 |TE_start                        |The start location of the TE annotation                                          |
 |TE_end                          |The end location of the TE annotation                                            |
 |TE_localisation                 |intragenic or intergenic                                                         |
-|method                          |ParasiTE method used to dtect the exonic TE (M1 or M2 or M3)                     |
+|method                          |ParasiTE method used to detect the exonic TE (M1 and/or M2 and/or M3)                     |
 |Alternative_splicing            |The predicted AS event caused by the TE                                          |
 |Alternative_transcription       |The predicted ATP event caused by the TE                                         |
 |first                           |Count of TE overlapping with exons of gene transcripts at the first exon (5'->3')|
