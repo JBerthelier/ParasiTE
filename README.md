@@ -32,7 +32,7 @@ ParasiTE is composed of five main steps:
 
 `git clone https://github.com/JBerthelier/ParasiTE.git`
 
-1) R (versions 3.6.0 and 3.6.1 were tested) https://www.r-project.org/
+1) R (versions 3.6.0 and 3.6.1 were tested) [[https://www.r-project.org/](https://cran.r-project.org/src/base/R-3/)](https://cran.r-project.org/src/base/R-3/)
 
 2) R libraries: 
 - [optparse](https://cran.r-project.org/web/packages/optparse/readme/README.html)  `install.packages("optparse")`
