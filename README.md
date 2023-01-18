@@ -42,11 +42,11 @@ ParasiTE is composed of five main steps:
 - [splitstackshape](https://www.r-project.org/nosvn/pandoc/splitstackshape.html) `install.packages("splitstackshape")`
 - [tidyr](https://www.tidyverse.org/blog/2019/09/tidyr-1-0-0/) `install.packages("tidyr")`
  
-3) [bedtools](https://bedtools.readthedocs.io/en/latest/index.html)
+3) [bedtools](https://bedtools.readthedocs.io/en/latest/index.html) (version XXX was tested)
 you can install locally or with conda 
 `conda install bedtools`
 
-4) [BEDOPS](https://bedops.readthedocs.io/en/latest/index.html) 
+4) [BEDOPS](https://bedops.readthedocs.io/en/latest/index.html) (version XXX was tested)
 you can install locally or with conda 
 `conda install -c bioconda bedops`
 
@@ -71,6 +71,8 @@ Results are in "ParasiTE_output" directory:
 
 
 # Run Parasite demo data to test your installation
+
+Expected run time for demo data on a Linux Machine 8G of memory 
 
 1. extract the folder
 `cd /ParasiTE/`
