@@ -1,4 +1,3 @@
-[![DOI](https://zenodo.org/badge/238374717.svg)](https://zenodo.org/badge/latestdoi/238374717)
 
 <p align="center">
   <img width="460" height="300" src="https://github.com/JBerthelier/ParasiTE/blob/master/logo.png">
