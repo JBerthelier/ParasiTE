@@ -3,7 +3,7 @@
   <img width="460" height="300" src="https://github.com/JBerthelier/ParasiTE/blob/master/logo.png">
 </p>
 
-# Inventory of transposon-related gene isoforms events
+# Inventory of transposon-related gene isoforms
 
 In brief, ParasiTE is a new tool aiming to: 
 
