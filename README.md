@@ -79,7 +79,7 @@ The expected run time for demo data is 2 min (it was tested on a Linux Machine U
 1. extract the folder
 `cd /ParasiTE/`
 
-`tar -xvzf Demo_data_Araport11.tar.gz`
+`tar -xvf Demo_data_Araport11.tar.gz`
 
 2. run the command
 
