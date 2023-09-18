@@ -218,7 +218,8 @@ In "List_altTE-G.tab"
 
 # Citation 
 
-Please cite our work 
+Please cite our work: 
+
 Berthelier, J., Furci, L., Asai, S. et al. Long-read direct RNA sequencing reveals epigenetic regulation of chimeric gene-transposon transcripts in Arabidopsis thaliana. 
 Nature Communications 14, 3248 (2023). https://doi.org/10.1038/s41467-023-38954-z
 
