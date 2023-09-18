@@ -39,7 +39,7 @@ An installation time of around 40 min if you need to install all dependencies
 1) R (versions 3.6.0 or 3.6.1) [https://cran.r-project.org/src/base/R-3/](https://cran.r-project.org/src/base/R-3/)
    or you can use conda to install R 3.6.1
 
-   conda create -n YourEnvironment -c conda-forge r-base=3.6.1
+  `conda create -n YourEnvironment -c conda-forge r-base=3.6.1`
 
 3) R libraries: 
 - [optparse](https://cran.r-project.org/web/packages/optparse/readme/README.html)  `install.packages("optparse")`
