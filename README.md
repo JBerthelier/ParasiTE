@@ -5,10 +5,11 @@
 
 # Inventory of transposon-related gene isoforms
 
-In brief, ParasiTE is a new tool aiming to: 
+In brief, ParasiTE is a tool aiming to: 
 
-1) identify TEs located in exonic or intronic regions of genes
-2) detect TEs that are co-transcribed by genes and sort the ones contributing to alternative isoforms of genes (ATE-G isoforms).
+1) Identify TEs located in exonic or intronic regions of genes.
+2) Detect TE sequences that are co-transcribed with gene mRNA (TE-Gene transcripts / TE-G transcripts).
+3) Classify the ones contributing to alternative isoforms of genes (Alternative TE-Gene isoforms / ATE-G isoforms).
 
 ParasiTE detects candidates for TE-AS and TE-ATP events as illustrated below using [CATANA](https://github.com/shiauck/CATANA) predictions:
 
@@ -19,7 +20,7 @@ ParasiTE detects candidates for TE-AS and TE-ATP events as illustrated below usi
 
 ParasiTE is composed of five main steps:
 
-1) Remove of transcripts of gene-like TEs (transcripts of active TEs which are not involved in gene transcripts)
+1) Remove transcripts of gene-like TEs (transcripts of active TEs which are not involved in TE-gene transcripts)
 2) Discrimination of intragenic and intergenic TEs
 3) Discrimination of intronic and exonic TEs
 4) Detection of TE-gene (TE-G) transcripts events
@@ -36,8 +37,11 @@ An installation time of around 40 min if you need to install all dependencies
 `git clone https://github.com/JBerthelier/ParasiTE.git`
 
 1) R (versions 3.6.0 or 3.6.1) [https://cran.r-project.org/src/base/R-3/](https://cran.r-project.org/src/base/R-3/)
+   or you can use conda to install R 3.6.1
 
-2) R libraries: 
+   conda create -n YourEnvironment -c conda-forge r-base=3.6.1
+
+3) R libraries: 
 - [optparse](https://cran.r-project.org/web/packages/optparse/readme/README.html)  `install.packages("optparse")`
 - [stringr](https://cran.r-project.org/web/packages/stringr/readme/README.html)  `install.packages("stringr")`
 - [data.table](https://www.rdocumentation.org/packages/data.table/versions/1.14.2) `install.packages("data.table")`
@@ -142,8 +146,7 @@ Table 1:
 |1      |Ref   |exon      |6788  |7069 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "1";|
 |1      |Ref   |exon      |7157  |7450 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "2";|
 |1      |Ref   |exon      |8571  |8737 |1000 | .    | .   |gene_id "ID.1"; transcript_id "ID.1.2"; exon_number_id "3";|
-|1      |Ref   |transcript|3631  |5899 |1000 | +    | .   |gene_id "ID.2"; transcript_id "ID.2.1";                    |
-|1      |Ref   |exon      |6788  |7069 |1000 | .    | .   |gene_id "ID.2"; transcript_id "ID.2.1"; exon_number_id "1";|
+
 etc...
 
 *Be careful* 
@@ -190,15 +193,15 @@ In "List_altTE-G.tab"
 |TE_gene                         |The id of the TE-gene event                                                      | 
 |Gene_id                         |The id of the gene                                                               |
 |Total_number_transcripts        |Number of isoforms transcribed by the gene                                       |
-|Total_transcripts_with_TE       |Number of isoforms transcribed by the gene overlapped by the TE                  |
-|total_exon_number               |Number of isoforms transcribed by the gene overlapping the TE                    |
+|Total_transcripts_with_TE       |Number of isoforms transcribed by the gene that are overlapped by the TE         |
+|total_exon_number               |Number of exons                                                                  |
 |Freq_TE_isoform                 |Frequence of isoforms overlapped by the TEs for the gene                         |
 |TE_id                           |The id of the TE                                                                 |
 |TE_chromosome                   |The Chromosome location of the TE annotation                                     |
 |TE_start                        |The start location of the TE annotation                                          |
 |TE_end                          |The end location of the TE annotation                                            |
 |TE_localisation                 |intragenic or intergenic                                                         |
-|method                          |ParasiTE method used to detect the exonic TE (M1 and/or M2 and/or M3)                     |
+|method                          |ParasiTE method used to detect the exonic TE (M1 and/or M2 and/or M3)            |
 |Alternative_splicing            |The predicted AS event caused by the TE                                          |
 |Alternative_transcription       |The predicted ATP event caused by the TE                                         |
 |first                           |Count of TE overlapping with exons of gene transcripts at the first exon (5'->3')|
@@ -213,4 +216,9 @@ In "List_altTE-G.tab"
 ![](https://github.com/JBerthelier/ParasiTE/blob/master/Help_illustration.PNG)
 
 
+# Citation 
+
+Please cite our work 
+Berthelier, J., Furci, L., Asai, S. et al. Long-read direct RNA sequencing reveals epigenetic regulation of chimeric gene-transposon transcripts in Arabidopsis thaliana. 
+Nature Communications 14, 3248 (2023). https://doi.org/10.1038/s41467-023-38954-z
 
